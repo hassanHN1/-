@@ -2,147 +2,149 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظمة ليالي العرب | الكيان السينمائي</title>
+    <title>منظومة ليالي العرب UHD | السيرفر الخاص</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
-        body { background: #020202; color: white; font-family: 'Cairo', sans-serif; overflow-x: hidden; }
-        .gold-glow { color: #d4af37; text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
-        .gold-bg { background: #d4af37; color: black; }
+        body { background: #000; color: #eee; font-family: 'Cairo', sans-serif; overflow-x: hidden; }
         
-        /* تأثيرات الكروت */
-        .movie-card { 
-            position: relative; transition: 0.5s; cursor: pointer; border-radius: 15px; 
-            overflow: hidden; border: 1px solid #111;
-        }
-        .movie-card:hover { 
-            transform: scale(1.08) translateY(-10px); 
-            border-color: #d4af37; z-index: 50;
-            box-shadow: 0 10px 30px rgba(0,0,0,1);
-        }
-        .movie-card img { width: 100%; height: 350px; object-fit: cover; }
+        /* تأثير النيون الذهبي للمنظمة */
+        .layali-glow { box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); border: 1px solid rgba(212, 175, 55, 0.4); }
+        .gold-text { color: #d4af37; text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
         
-        /* مشغل الفيديو */
-        #theater { 
-            position: fixed; inset: 0; background: #000; z-index: 9999; 
-            display: none; flex-direction: column;
+        /* تصميم الكروت المستوحى من UHDMovies */
+        .uhd-card {
+            position: relative; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: #050505; border-radius: 8px; overflow: hidden;
         }
+        .uhd-card:hover { transform: scale(1.03); z-index: 10; border-color: #d4af37; }
+        .uhd-card img { width: 100%; height: 380px; object-fit: cover; filter: brightness(0.8); }
+        .uhd-card:hover img { filter: brightness(1); }
+        
+        .badge { position: absolute; top: 10px; right: 10px; background: #d4af37; color: #000; padding: 2px 8px; font-size: 10px; font-weight: 900; border-radius: 4px; z-index: 5; }
+        
+        /* مشغل السينما */
+        #cinema-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; }
         iframe { width: 100%; height: 100%; border: none; }
-
-        /* شريط البحث الفخم */
-        .search-container {
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(212,175,55,0.2);
-            border-radius: 50px; padding: 10px 25px; transition: 0.3s;
-        }
-        .search-container:focus-within { border-color: #d4af37; box-shadow: 0 0 20px rgba(212,175,55,0.2); }
     </style>
 </head>
 <body>
 
-    <div id="theater">
-        <div class="p-4 flex justify-between bg-black/80 backdrop-blur-md">
-            <h2 id="playing-title" class="gold-glow font-black">جاري العرض...</h2>
-            <button onclick="closeTheater()" class="bg-red-600 px-6 py-1 rounded-full text-white font-bold hover:bg-red-700">إغلاق X</button>
+    <div id="cinema-overlay">
+        <div class="absolute top-4 left-4 z-[10000] flex gap-4 items-center">
+            <span class="bg-black/80 text-white px-4 py-2 rounded-lg text-xs border border-white/10 italic">سيرفر ليالي العرب: <span class="gold-text">4K UHD + SUBTITLE</span></span>
+            <button onclick="killStream()" class="bg-red-600 text-white px-6 py-2 rounded-full font-black">إنهاء العرض ×</button>
         </div>
-        <div id="player-box" class="flex-1"></div>
+        <div id="stream-container" class="w-full h-full"></div>
     </div>
 
-    <header class="p-8 flex flex-col md:flex-row justify-between items-center gap-6">
-        <div class="text-center md:text-right">
-            <h1 class="text-4xl font-black gold-glow mb-1 italic">LAYALI AL ARAB</h1>
-            <p class="text-xs tracking-[5px] text-gray-500">THE PRIVATE CINEMA</p>
-        </div>
+    <header class="p-6 bg-[#050505] border-b border-zinc-900 sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <i class="fas fa-microchip gold-text text-3xl animate-pulse"></i>
+                <h1 class="text-3xl font-black tracking-tighter uppercase gold-text">Layali Arab <span class="text-white font-light">UHD</span></h1>
+            </div>
+            
+            <div class="relative w-1/3">
+                <input type="text" id="mainSearch" placeholder="ابحث عن الأفلام المرفوعة (بالإنجليزي)..." 
+                       class="w-full bg-black border border-zinc-800 p-3 pr-12 rounded-xl text-sm outline-none focus:border-gold-text">
+                <i class="fas fa-search absolute left-4 top-4 text-zinc-600"></i>
+            </div>
 
-        <div class="search-container flex items-center gap-4 w-full max-w-xl">
-            <i class="fas fa-search text-gray-500"></i>
-            <input type="text" id="searchInput" placeholder="ابحث عن أي فيلم (بالإنجليزي)..." class="bg-transparent outline-none w-full text-sm">
-            <button onclick="search()" class="gold-bg px-6 py-2 rounded-full font-black text-xs">جلب</button>
+            <div class="flex gap-4">
+                <div class="text-left text-[10px] text-zinc-500 uppercase">System: <span class="text-green-500">Injecting Data...</span></div>
+            </div>
         </div>
     </header>
 
-    <main class="p-8">
-        <div class="flex items-center gap-4 mb-10">
-            <div class="h-1 w-12 gold-bg"></div>
-            <h2 class="text-2xl font-black uppercase tracking-tighter">آخر السحبات العالمية</h2>
+    <main class="max-w-7xl mx-auto p-8">
+        <div class="flex justify-between items-end mb-10">
+            <div>
+                <h2 class="text-3xl font-black">المرفوعات الأخيرة</h2>
+                <p class="text-zinc-500 text-sm italic mt-1 font-mono">Scraping UHD Content - Proxy Active</p>
+            </div>
+            <div class="flex gap-2 bg-zinc-900 p-1 rounded-lg">
+                <button onclick="fetchUHD('popular')" class="px-4 py-2 text-xs font-bold hover:bg-zinc-800 rounded-md">الكل</button>
+                <button onclick="fetchUHD('top_rated')" class="px-4 py-2 text-xs font-bold hover:bg-zinc-800 rounded-md">أفلام 4K</button>
+            </div>
         </div>
 
-        <div id="grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-8">
-            <div class="animate-pulse bg-zinc-900 h-80 rounded-2xl"></div>
-            <div class="animate-pulse bg-zinc-900 h-80 rounded-2xl"></div>
-            <div class="animate-pulse bg-zinc-900 h-80 rounded-2xl"></div>
-            <div class="animate-pulse bg-zinc-900 h-80 rounded-2xl"></div>
-        </div>
+        <div id="uhd-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            </div>
     </main>
 
     <script>
-        const API_KEY = '8d6d9194546435662aa063955619f697';
-        const grid = document.getElementById('grid');
+        const MASTER_KEY = '8d6d9194546435662aa063955619f697';
+        const grid = document.getElementById('uhd-grid');
 
-        // دالة الجلب الأساسية
-        async function loadMovies(query = '') {
-            let url = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=ar-SA&page=1`;
-            if (query) url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}&language=ar-SA`;
+        async function fetchUHD(type = 'popular', query = '') {
+            grid.innerHTML = '<div class="col-span-full text-center py-20 animate-pulse text-zinc-600">جاري سحب المحتوى من السيرفرات العالمية...</div>';
+            
+            let url = `https://api.themoviedb.org/3/movie/${type}?api_key=${MASTER_KEY}&language=ar-SA&page=1`;
+            if(query) url = `https://api.themoviedb.org/3/search/movie?api_key=${MASTER_KEY}&query=${query}&language=ar-SA`;
 
             try {
                 const res = await fetch(url);
                 const data = await res.json();
-                display(data.results);
+                renderUHD(data.results);
             } catch (err) {
-                grid.innerHTML = `<div class="col-span-full text-center py-20 text-red-500 font-bold">عذراً قائد، السيرفر العالمي مشغول، حاول تبحث عن فيلم محدد.</div>`;
+                grid.innerHTML = '<div class="col-span-full text-center py-20 text-red-900 font-black tracking-widest uppercase">Encryption Error: System Blocked</div>';
             }
         }
 
-        function display(movies) {
+        function renderUHD(movies) {
             grid.innerHTML = '';
-            movies.forEach(m => {
-                if (!m.poster_path) return;
+            movies.forEach(movie => {
+                if(!movie.poster_path) return;
                 const card = document.createElement('div');
-                card.className = 'movie-card animate__animated animate__fadeInUp';
+                card.className = 'uhd-card layali-glow animate__animated animate__fadeIn';
                 card.innerHTML = `
-                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" loading="lazy">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80"></div>
-                    <div class="absolute bottom-0 p-4 w-full">
-                        <p class="text-xs font-bold truncate">${m.title}</p>
-                        <p class="text-[10px] text-yellow-500 mt-1 italic">Rating: ${m.vote_average}</p>
+                    <div class="badge">UHD | 4K</div>
+                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}">
+                    <div class="p-4 bg-gradient-to-t from-black to-transparent">
+                        <h3 class="font-black text-sm truncate uppercase tracking-tighter">${movie.title}</h3>
+                        <div class="flex justify-between items-center mt-3">
+                            <span class="text-[10px] text-zinc-500"><i class="fas fa-calendar-alt"></i> ${movie.release_date.split('-')[0]}</span>
+                            <span class="text-[10px] gold-text font-bold">BY LAYALI ARAB</span>
+                        </div>
                     </div>
                 `;
-                card.onclick = () => play(m.id, m.title);
+                card.onclick = () => injectStream(movie.id, movie.title);
                 grid.appendChild(card);
             });
         }
 
-        function play(id, title) {
-            const theater = document.getElementById('theater');
-            const box = document.getElementById('player-box');
-            document.getElementById('playing-title').innerText = `يعرض الآن: ${title}`;
+        function injectStream(id, title) {
+            const overlay = document.getElementById('cinema-overlay');
+            const container = document.getElementById('stream-container');
             
-            // نستخدم السيرفر الأكثر استقراراً لليالي العرب
+            // هاك الجلب: نستخدم خادم يجلب النسخة مع ترجمة عربية تلقائية
             const streamUrl = `https://vidsrc.to/embed/movie/${id}`; 
             
-            theater.style.display = 'flex';
-            box.innerHTML = `<iframe src="${streamUrl}" allowfullscreen></iframe>`;
+            overlay.style.display = 'block';
+            container.innerHTML = `<iframe src="${streamUrl}" allowfullscreen></iframe>`;
+            
+            Swal.fire({
+                toast: true, position: 'top', title: `سحب البث: ${title}`,
+                showConfirmButton: false, timer: 4000, background: '#000', color: '#d4af37'
+            });
         }
 
-        function closeTheater() {
-            document.getElementById('theater').style.display = 'none';
-            document.getElementById('player-box').innerHTML = '';
+        function killStream() {
+            document.getElementById('cinema-overlay').style.display = 'none';
+            document.getElementById('stream-container').innerHTML = '';
         }
 
-        function search() {
-            const val = document.getElementById('searchInput').value;
-            if(val) loadMovies(val);
-        }
-
-        // تشغيل تلقائي عند الفتح
-        loadMovies();
-
-        // بحث عند الضغط على Enter
-        document.getElementById('searchInput').addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') search();
+        // البحث الذكي
+        document.getElementById('mainSearch').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') fetchUHD('', e.target.value);
         });
+
+        // تشغيل الجلب التلقائي عند التحميل
+        fetchUHD();
     </script>
 </body>
 </html>
