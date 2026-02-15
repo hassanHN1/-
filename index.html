@@ -1,605 +1,569 @@
 <!DOCTYPE html>
-<html id="htmlTag" lang="ar" dir="rtl">
+<html id="masterHtml" lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظمة ليالي العرب | PRO Edition</title>
+    <title>منصة منظمة ليالي العرب | THE ULTIMATE</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700;900&family=Poppins:wght@300;600;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@200;400;700;900&family=Orbitron:wght@400;900&display=swap');
 
         :root {
-            --royal-gold: #d4af37;
-            --noble-blue: #020617;
-            --accent-purple: #1e1b4b;
-            --glass-white: rgba(255, 255, 255, 0.05);
+            --primary-bg: #05070a;
+            --sidebar-bg: #0a0e14;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --gold-main: #d4af37;
+            --gold-glow: rgba(212, 175, 55, 0.4);
+            --accent-red: #ff4d4d;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--gold-main) transparent;
+            font-family: 'Tajawal', sans-serif;
+            transition: all 0.2s ease-in-out;
+        }
 
         body {
-            background: var(--noble-blue);
+            background: var(--primary-bg);
             color: #e2e8f0;
-            overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 0% 0%, #161b33 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, #1e1b4b 0%, transparent 50%);
-            min-height: 100vh;
-        }
-
-        /* تأثيرات الزجاج الفاخر */
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        .gold-gradient-text {
-            background: linear-gradient(to right, #fde68a, #d4af37, #b45309);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* زر إنشاء خيمة - التصميم الجديد */
-        .create-btn-hero {
-            background: linear-gradient(135deg, #d4af37 0%, #b45309 100%);
-            position: relative;
+            height: 100vh;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .create-btn-hero:hover {
-            transform: scale(1.05) translateY(-5px);
-            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.3);
+        /* تخطيط ديسكورد الاحترافي */
+        .app-container {
+            display: grid;
+            grid-template-columns: 80px 280px 1fr 300px;
+            height: 100vh;
         }
 
-        .create-btn-hero::after {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: rgba(255,255,255,0.1);
-            transform: rotate(45deg);
-            transition: 0.5s;
+        @media (max-width: 1024px) {
+            .app-container { grid-template-columns: 70px 1fr; }
+            .sidebar-left, .user-list { display: none; }
         }
 
-        .create-btn-hero:hover::after { left: 120%; }
-
-        /* موجات الصوت */
-        #audioVisualizer {
-            width: 100%;
-            height: 100px;
-            border-radius: 20px;
-            background: rgba(0,0,0,0.3);
-        }
-
-        /* واجهة الدردشة */
-        .msg-bubble {
-            border-radius: 20px;
-            padding: 12px 18px;
-            max-width: 75%;
-            position: relative;
-            animation: slideUp 0.3s ease;
-        }
-
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        /* شريط التحكم السفلي في الغرفة */
-        .control-bar {
-            background: rgba(15, 23, 42, 0.9);
-            border-top: 1px solid rgba(212, 175, 55, 0.3);
-            backdrop-filter: blur(15px);
-        }
-
-        .control-btn {
-            width: 50px; height: 50px;
-            border-radius: 15px;
+        /* تصميم الأزرار الجانبية */
+        .server-icon {
+            width: 55px; height: 55px;
+            border-radius: 50%;
+            background: var(--card-bg);
             display: flex; items-center: center; justify-content: center;
-            transition: 0.3s;
+            margin: 12px auto;
             cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            border: 1px solid rgba(212, 175, 55, 0.1);
         }
 
-        .control-btn:hover { background: rgba(212, 175, 55, 0.2); border-color: var(--royal-gold); }
-        .control-btn.active { background: #ef4444; border-color: #ef4444; }
+        .server-icon:hover {
+            border-radius: 15px;
+            background: var(--gold-main);
+            color: black;
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
 
-        /* لغات */
-        .lang-en { font-family: 'Poppins', sans-serif; direction: ltr; }
-        .lang-ar { font-family: 'Tajawal', sans-serif; direction: rtl; }
+        .server-icon.active::before {
+            content: '';
+            position: absolute; left: -12px;
+            width: 4px; height: 40px;
+            background: var(--gold-main);
+            border-radius: 0 4px 4px 0;
+        }
 
-        /* شاشة مشاركة الشاشة */
-        #screenShareContainer {
-            width: 100%;
-            aspect-ratio: 16/9;
+        /* منطقة المحتوى الرئيسية */
+        .main-view {
+            background: radial-gradient(circle at top right, #0d1117, #05070a);
+            display: flex; flex-direction: column;
+            border-left: 1px solid rgba(255,255,255,0.05);
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* نظام الغرفة السينمائي */
+        .video-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .video-card {
             background: #000;
             border-radius: 20px;
+            position: relative;
             overflow: hidden;
-            display: none;
-            border: 2px solid var(--royal-gold);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            aspect-ratio: 16/9;
         }
 
-        #screenVideo { width: 100%; height: 100%; object-fit: contain; }
+        .video-card.sharing-screen {
+            grid-column: 1 / -1;
+            aspect-ratio: auto;
+            height: 70vh;
+        }
+
+        /* وضع ملء الشاشة الفائق */
+        .fullscreen-overlay {
+            position: fixed; inset: 0;
+            z-index: 9999; background: #000;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* الدردشة */
+        .chat-area {
+            height: 100%;
+            display: flex; flex-direction: column;
+            background: var(--sidebar-bg);
+        }
+
+        /* الأزرار الذهبية */
+        .gold-btn {
+            background: linear-gradient(135deg, #d4af37, #b45309);
+            color: black; font-weight: 900;
+            padding: 12px 24px; border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(180, 83, 9, 0.3);
+        }
+
+        .gold-btn:hover { transform: scale(1.02); box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4); }
+
+        /* تأثير التحدث */
+        .talking {
+            box-shadow: 0 0 0 4px var(--gold-main);
+            animation: pulse-gold 1.5s infinite;
+        }
+
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0px rgba(212, 175, 55, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0px rgba(212, 175, 55, 0); }
+        }
+
+        /* زر تبديل اللغة (الموقع الجديد) */
+        .system-bar {
+            padding: 15px;
+            background: rgba(0,0,0,0.4);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .lang-switch {
+            font-size: 10px; font-weight: bold;
+            padding: 4px 10px; border: 1px solid var(--gold-main);
+            border-radius: 6px; color: var(--gold-main);
+            cursor: pointer;
+        }
+
+        .lang-switch:hover { background: var(--gold-main); color: black; }
 
         .hidden { display: none !important; }
+        
+        /* Fullscreen Video styling */
+        video::backdrop { background: #000; }
     </style>
 </head>
 <body class="lang-ar">
 
-    <div class="fixed top-6 right-6 z-[100]">
-        <button onclick="toggleLanguage()" class="glass-panel px-5 py-2.5 rounded-2xl flex items-center gap-2 hover:bg-white/10 transition group">
-            <i class="fas fa-language text-yellow-500 text-xl group-hover:rotate-12 transition"></i>
-            <span id="langLabel" class="font-bold text-sm">English</span>
-        </button>
-    </div>
-
-    <section id="authScreen" class="min-h-screen flex items-center justify-center p-6">
-        <div class="glass-panel p-12 rounded-[3rem] w-full max-w-xl text-center relative overflow-hidden">
-            <div class="absolute -top-24 -left-24 w-48 h-48 bg-yellow-500/10 rounded-full blur-3xl"></div>
-            
-            <div class="relative z-10">
-                <div class="text-8xl mb-6 animate__animated animate__pulse animate__infinite">🏮</div>
-                <h1 class="text-5xl font-black gold-gradient-text mb-4" data-key="title">منظمة ليالي العرب</h1>
-                <p class="text-gray-400 mb-10 tracking-widest uppercase text-xs" data-key="subtitle">الجيل القادم من المحادثات الصوتية</p>
-
-                <div id="regBox" class="space-y-6">
-                    <div class="flex flex-col items-center">
-                        <label for="pfpInput" class="cursor-pointer group">
-                            <div class="w-28 h-28 rounded-full border-4 border-yellow-500 p-1 relative overflow-hidden">
-                                <img id="pfpPreview" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-full h-full object-cover rounded-full">
-                                <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                                    <i class="fas fa-camera text-2xl"></i>
-                                </div>
-                            </div>
-                        </label>
-                        <input type="file" id="pfpInput" class="hidden" onchange="handlePfp(this)">
-                    </div>
-
-                    <div class="grid grid-cols-1 gap-4">
-                        <input type="text" id="regUser" data-placeholder="username" class="w-full bg-slate-900/50 border border-white/10 p-4 rounded-2xl outline-none focus:border-yellow-500 transition text-center">
-                        <input type="password" id="regPass" data-placeholder="password" class="w-full bg-slate-900/50 border border-white/10 p-4 rounded-2xl outline-none focus:border-yellow-500 transition text-center">
-                    </div>
-
-                    <button onclick="register()" class="create-btn-hero w-full py-5 rounded-2xl font-black text-xl text-white shadow-2xl" data-key="signupBtn">بدء الرحلة</button>
-                    <p class="text-gray-500 text-sm">
-                        <span data-key="haveAccount">عضو سابق؟</span> 
-                        <button onclick="switchAuth(true)" class="text-yellow-500 font-bold" data-key="login">تسجيل الدخول</button>
-                    </p>
+    <div id="authOverlay" class="fixed inset-0 z-[10000] bg-black flex items-center justify-center p-6 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
+        <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 bg-[#0a0e14] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl animate__animated animate__zoomIn">
+            <div class="p-12 flex flex-col justify-center items-center text-center bg-gradient-to-b from-yellow-950/20 to-black">
+                <div class="w-24 h-24 bg-gold-main rounded-3xl rotate-45 flex items-center justify-center mb-8 shadow-[0_0_30px_rgba(212,175,55,0.3)]">
+                    <i class="fas fa-crown text-black text-4xl -rotate-45"></i>
                 </div>
-
-                <div id="loginBox" class="hidden space-y-6 animate__animated animate__fadeIn">
-                    <input type="text" id="logUser" data-placeholder="username" class="w-full bg-slate-900/50 border border-white/10 p-4 rounded-2xl text-center outline-none">
-                    <input type="password" id="logPass" data-placeholder="password" class="w-full bg-slate-900/50 border border-white/10 p-4 rounded-2xl text-center outline-none">
-                    <button onclick="login()" class="create-btn-hero w-full py-5 rounded-2xl font-black text-xl shadow-2xl" data-key="loginBtn">دخول الخيمة</button>
-                    <button onclick="switchAuth(false)" class="text-gray-500 text-sm underline" data-key="signup">إنشاء حساب جديد</button>
+                <h1 class="text-4xl font-black mb-4 tracking-tighter" data-key="title">منظمة ليالي العرب</h1>
+                <p class="text-gray-500 text-sm leading-relaxed" data-key="heroDesc">النظام الأكثر تطوراً لإدارة المجالس الصوتية والبث المباشر.</p>
+            </div>
+            
+            <div class="p-12 bg-[#0d1117] flex flex-col justify-center">
+                <div id="authForms">
+                    <div class="space-y-5">
+                        <div>
+                            <label class="text-[10px] uppercase font-black text-yellow-500 mb-2 block" data-key="username">اسم المستخدم</label>
+                            <input type="text" id="userInput" class="w-full bg-black/50 border border-white/5 p-4 rounded-xl outline-none focus:border-yellow-500 transition">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase font-black text-yellow-500 mb-2 block" data-key="password">كلمة السر</label>
+                            <input type="password" id="passInput" class="w-full bg-black/50 border border-white/5 p-4 rounded-xl outline-none focus:border-yellow-500 transition">
+                        </div>
+                        <button onclick="handleAuth()" class="gold-btn w-full py-5 text-lg" data-key="loginBtn">دخول النظام</button>
+                        <p class="text-center text-xs text-gray-600 mt-4">بمجرد الدخول أنت توافق على شروط المنظمة</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <div id="mainApp" class="hidden min-h-screen">
-        <nav class="p-6 flex justify-between items-center border-b border-white/5 glass-panel sticky top-0 z-50">
-            <div class="flex items-center gap-4">
-                <img id="navPfp" src="" class="w-14 h-14 rounded-2xl border-2 border-yellow-500 object-cover shadow-lg">
-                <div>
-                    <h2 id="navName" class="font-black text-xl">--</h2>
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                        <span class="text-[10px] text-gray-500 font-bold uppercase" data-key="onlineStatus">متصل الآن</span>
-                    </div>
-                </div>
+    <div id="appInterface" class="app-container hidden animate__animated animate__fadeIn">
+        
+        <aside class="sidebar-left bg-[#05070a] flex flex-col items-center py-4 border-r border-white/5">
+            <div class="server-icon active" title="الرئيسية">
+                <i class="fas fa-home text-xl"></i>
+            </div>
+            <div class="w-8 h-[2px] bg-white/10 my-2"></div>
+            <div class="server-icon" onclick="showCreateModal()">
+                <i class="fas fa-plus text-yellow-500"></i>
+            </div>
+            <div class="server-icon">
+                <i class="fas fa-compass"></i>
+            </div>
+        </aside>
+
+        <aside class="bg-[#0a0e14] flex flex-col border-r border-white/5">
+            <div class="p-6 border-b border-white/5 shadow-xl">
+                <h2 class="font-black text-lg flex justify-between items-center">
+                    <span>المنظمة العامة</span>
+                    <i class="fas fa-chevron-down text-[10px]"></i>
+                </h2>
             </div>
             
-            <div class="flex gap-4">
-                <div class="hidden md:flex flex-col items-end">
-                    <span class="text-xs text-gray-500" data-key="wallet">محفظة الذهب</span>
-                    <span class="text-yellow-500 font-black"><i class="fas fa-coins mr-1"></i> <span id="navGold">0</span></span>
-                </div>
-                <button onclick="logout()" class="w-12 h-12 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center hover:bg-red-500 transition">
-                    <i class="fas fa-power-off"></i>
-                </button>
-            </div>
-        </nav>
-
-        <main class="max-w-7xl mx-auto p-6 lg:p-10">
-            <div class="text-center mb-16 py-10 relative">
-                <div class="absolute inset-0 flex justify-center items-center opacity-5">
-                    <i class="fas fa-mosque text-[20rem]"></i>
-                </div>
-                <h2 class="text-4xl md:text-6xl font-black mb-6 animate__animated animate__fadeInDown">
-                    <span data-key="welcome">أهلاً بك في</span> <br> 
-                    <span class="gold-gradient-text" data-key="title">منظمة ليالي العرب</span>
-                </h2>
-                <p class="text-gray-500 mb-10 max-w-2xl mx-auto" data-key="heroDesc">مكانك المفضل للدردشة الصوتية الاحترافية، مشاركة الشاشة، والفعاليات الرمضانية الكبرى.</p>
-                
-                <button onclick="showCreateRoom()" class="create-btn-hero px-12 py-6 rounded-[2rem] text-2xl font-black text-white shadow-2xl flex items-center gap-4 mx-auto">
-                    <i class="fas fa-plus-circle text-3xl"></i>
-                    <span data-key="newRoom">إنشاء خيمة صوتية</span>
-                </button>
-            </div>
-
-            <div class="flex justify-between items-end mb-8 border-b border-white/5 pb-4">
-                <h3 class="text-2xl font-black flex items-center gap-3">
-                    <i class="fas fa-tower-broadcast text-yellow-500"></i>
-                    <span data-key="explore">المجالس النشطة</span>
-                </h3>
-                <div class="flex gap-3 text-xs">
-                    <span class="bg-yellow-500/10 text-yellow-500 px-4 py-2 rounded-full font-bold">Live: <span id="liveCounter">0</span></span>
+            <div class="flex-1 overflow-y-auto p-3 space-y-8">
+                <div>
+                    <h3 class="text-[10px] uppercase font-black text-gray-600 mb-4 px-3" data-key="voiceChannels">الغرف الصوتية</h3>
+                    <div id="roomList" class="space-y-1">
+                        </div>
                 </div>
             </div>
 
-            <div id="roomsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="system-bar">
+                <div class="flex items-center gap-3">
+                    <img id="userAvatar" src="https://ui-avatars.com/api/?name=User&background=d4af37&color=000" class="w-10 h-10 rounded-xl object-cover">
+                    <div class="overflow-hidden">
+                        <p id="userNameDisplay" class="font-bold text-sm truncate w-24">--</p>
+                        <p class="text-[9px] text-green-500 font-bold uppercase">Online</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <div onclick="toggleLanguage()" class="lang-switch">EN</div>
+                    <i class="fas fa-cog text-gray-500 cursor-pointer hover:text-white"></i>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-view relative">
+            
+            <header class="p-4 bg-black/20 backdrop-blur-md border-b border-white/5 flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-hashtag text-gray-500 text-xl"></i>
+                    <h3 id="activeRoomName" class="font-black text-xl">اكتشف المنظمة</h3>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="screenShareBtn" onclick="startScreenShare()" class="hidden bg-yellow-500/10 text-yellow-500 px-4 py-2 rounded-lg text-xs font-black border border-yellow-500/20 hover:bg-yellow-500 hover:text-black">
+                        <i class="fas fa-desktop mr-2"></i> <span data-key="shareScreen">مشاركة الشاشة</span>
+                    </button>
+                    <i class="fas fa-users text-gray-500"></i>
+                    <i class="fas fa-bell text-gray-500"></i>
+                </div>
+            </header>
+
+            <div id="contentArea" class="flex-1 overflow-hidden flex flex-col">
+                <div id="welcomeView" class="flex-1 flex flex-col items-center justify-center text-center p-12">
+                    <div class="w-32 h-32 bg-yellow-500/5 rounded-[3rem] flex items-center justify-center mb-8 border border-yellow-500/10">
+                        <i class="fas fa-shield-halved text-6xl text-yellow-500 opacity-20"></i>
+                    </div>
+                    <h2 class="text-4xl font-black mb-4" data-key="welcomeTitle">أهلاً بك في مقر القيادة</h2>
+                    <p class="text-gray-500 max-w-md" data-key="welcomeDesc">اختر غرفة من القائمة الجانبية أو أنشئ خيمة جديدة لتبدأ البث والمحادثة مع أعضاء المنظمة.</p>
+                    <button onclick="showCreateModal()" class="gold-btn mt-8 px-12" data-key="newRoom">بدء خيمة جديدة</button>
                 </div>
 
-            <div id="emptyRooms" class="hidden text-center py-20 opacity-30">
-                <i class="fas fa-ghost text-7xl mb-4"></i>
-                <p class="text-xl" data-key="noRooms">لا توجد خيام مفتوحة.. كن أول من يبدأ!</p>
+                <div id="roomView" class="hidden flex-1 flex flex-col overflow-hidden">
+                    <div id="mainVideoGrid" class="video-grid">
+                        </div>
+
+                    <div class="p-6 bg-black/40 border-t border-white/10 flex justify-center items-center gap-6">
+                        <div onclick="toggleAudio()" id="micBtn" class="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center cursor-pointer border border-white/10 hover:bg-yellow-500 hover:text-black">
+                            <i class="fas fa-microphone text-xl"></i>
+                        </div>
+                        <div onclick="toggleVideo()" id="camBtn" class="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center cursor-pointer border border-white/10 hover:bg-yellow-500 hover:text-black">
+                            <i class="fas fa-video text-xl"></i>
+                        </div>
+                        <div onclick="toggleCinemaMode()" class="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center cursor-pointer border border-white/10 hover:bg-blue-500">
+                            <i class="fas fa-expand text-xl"></i>
+                        </div>
+                        <div onclick="exitRoom()" class="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center cursor-pointer shadow-lg shadow-red-900/40">
+                            <i class="fas fa-phone-slash text-xl text-white"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
+
+        <aside class="user-list bg-[#0a0e14] flex flex-col border-l border-white/5">
+            <div class="flex-1 flex flex-col">
+                <div class="p-4 border-b border-white/5 text-[10px] font-black uppercase text-gray-500 tracking-widest" data-key="chatTitle">الدردشة المباشرة</div>
+                <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4">
+                    </div>
+                <div class="p-4">
+                    <div class="relative">
+                        <input type="text" id="chatInput" data-placeholder="messageHint" class="w-full bg-black/50 border border-white/10 p-4 pr-12 rounded-xl outline-none focus:border-yellow-500 text-sm">
+                        <i onclick="sendMessage()" class="fas fa-paper-plane absolute right-4 top-4 text-yellow-500 cursor-pointer"></i>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
     </div>
 
-    <div id="chatView" class="hidden fixed inset-0 z-[60] bg-[#020617] flex flex-col animate__animated animate__fadeIn">
-        <header class="p-6 glass-panel flex justify-between items-center">
-            <div class="flex items-center gap-6">
-                <button onclick="leaveRoom()" class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
-                    <i class="fas fa-chevron-right text-yellow-500"></i>
-                </button>
-                <div>
-                    <h3 id="roomTitle" class="text-2xl font-black">--</h3>
-                    <p class="text-[10px] text-green-500 font-bold uppercase tracking-widest"><i class="fas fa-signal animate-pulse mr-1"></i> سحابة صوتية مشفرة</p>
-                </div>
+    <div id="cinemaOverlay" class="hidden fullscreen-overlay animate__animated animate__fadeIn">
+        <button onclick="toggleCinemaMode()" class="absolute top-10 right-10 z-[10001] w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-red-500">
+            <i class="fas fa-times"></i>
+        </button>
+        <div id="cinemaContainer" class="w-full h-full p-10">
             </div>
-            
-            <div class="flex items-center gap-4">
-                <div class="hidden md:flex -space-x-3">
-                    <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-yellow-500 flex items-center justify-center text-[10px] font-bold">+12</div>
-                </div>
-                <button class="bg-yellow-500/10 text-yellow-500 px-6 py-2.5 rounded-xl font-bold text-sm" data-key="invite">دعوة صديق</button>
-            </div>
-        </header>
-
-        <div class="flex-1 overflow-y-auto p-6 flex flex-col items-center justify-center">
-            <div class="w-full max-w-4xl space-y-8 text-center">
-                
-                <div id="screenShareContainer" class="animate__animated animate__zoomIn">
-                    <video id="screenVideo" autoplay playsinline muted></video>
-                </div>
-
-                <div class="relative inline-block">
-                    <div id="voiceRing" class="absolute -inset-4 bg-yellow-500/20 rounded-full animate-ping opacity-0"></div>
-                    <img id="hostPfp" src="" class="w-48 h-48 rounded-[3rem] border-4 border-yellow-500 object-cover shadow-[0_0_50px_rgba(212,175,55,0.3)]">
-                    <div class="absolute -bottom-2 -right-2 bg-yellow-500 text-black px-4 py-1 rounded-full text-xs font-black">HOST</div>
-                </div>
-
-                <div class="space-y-2">
-                    <h4 id="hostName" class="text-3xl font-black">--</h4>
-                    <p class="text-gray-500 italic" id="roomStatus">جاري التحدث...</p>
-                </div>
-
-                <div class="w-full max-w-md mx-auto">
-                    <canvas id="audioVisualizer"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <footer class="control-bar p-6 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-4">
-                <div onclick="toggleMic()" id="micBtn" class="control-btn" title="الميكروفون">
-                    <i class="fas fa-microphone text-xl"></i>
-                </div>
-                <div onclick="toggleScreenShare()" id="screenBtn" class="control-btn" title="مشاركة الشاشة">
-                    <i class="fas fa-desktop text-xl"></i>
-                </div>
-                <div onclick="toggleDeafen()" id="deafenBtn" class="control-btn" title="كتم الصوت العام">
-                    <i class="fas fa-headphones text-xl"></i>
-                </div>
-            </div>
-
-            <div class="flex-1 max-w-2xl w-full flex gap-3">
-                <input type="text" id="msgInput" data-placeholder="messageHint" class="flex-1 bg-white/5 border border-white/10 px-6 py-4 rounded-2xl outline-none focus:border-yellow-500 transition">
-                <button onclick="sendMsg()" class="w-14 h-14 rounded-2xl bg-yellow-500 text-black flex items-center justify-center hover:scale-105 transition active:scale-95 shadow-lg">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-
-            <div class="flex items-center gap-4">
-                <button onclick="sendEmoji('🏮')" class="text-2xl hover:scale-125 transition">🏮</button>
-                <button onclick="sendEmoji('☕')" class="text-2xl hover:scale-125 transition">☕</button>
-                <button onclick="sendEmoji('👑')" class="text-2xl hover:scale-125 transition">👑</button>
-            </div>
-        </footer>
     </div>
 
     <script>
-        // --- البيانات واللغات ---
+        // --- 1. نظام الترجمة (Localization) ---
         const i18n = {
             ar: {
-                title: "منظمة ليالي العرب", subtitle: "الجيل القادم من المحادثات الصوتية", username: "اسم المستخدم الملكي",
-                password: "كلمة السر", signupBtn: "تأسيس الهوية", haveAccount: "لديك حساب؟",
-                login: "دخول", loginBtn: "دخول المجلس", welcome: "أهلاً بك في", heroDesc: "مكانك المفضل للدردشة الصوتية الاحترافية، مشاركة الشاشة، والفعاليات الرمضانية الكبرى.",
-                newRoom: "إنشاء خيمة صوتية", explore: "المجالس النشطة", noRooms: "لا توجد خيام مفتوحة حالياً..",
-                invite: "دعوة صديق", messageHint: "اكتب رسالة سريعة للمجلس...", onlineStatus: "متصل بالبث",
-                wallet: "محفظة الذهب"
+                title: "منظمة ليالي العرب", heroDesc: "النظام الأكثر تطوراً لإدارة المجالس الصوتية والبث المباشر.",
+                username: "اسم المستخدم", password: "كلمة السر", loginBtn: "دخول النظام",
+                voiceChannels: "الغرف الصوتية", welcomeTitle: "أهلاً بك في مقر القيادة",
+                welcomeDesc: "اختر غرفة من القائمة الجانبية أو أنشئ خيمة جديدة لتبدأ البث والمحادثة.",
+                newRoom: "بدء خيمة جديدة", shareScreen: "مشاركة الشاشة", chatTitle: "الدردشة المباشرة",
+                messageHint: "اكتب رسالة...", createRoomTitle: "إنشاء خيمة جديدة",
+                roomName: "اسم الغرفة", createBtn: "تأسيس الغرفة"
             },
             en: {
-                title: "Layali Arab Org", subtitle: "Next-Gen Voice Experience", username: "Royal Username",
-                password: "Password", signupBtn: "Initialize Identity", haveAccount: "Already a member?",
-                login: "Login", loginBtn: "Enter Council", welcome: "Welcome to", heroDesc: "Your premium destination for pro voice chat, screen sharing, and major Ramadan events.",
-                newRoom: "Create Voice Tent", explore: "Active Tents", noRooms: "No tents open yet..",
-                invite: "Invite Friend", messageHint: "Type a quick message...", onlineStatus: "Online Now",
-                wallet: "Gold Wallet"
+                title: "Layali Arab Org", heroDesc: "The most advanced system for voice councils and live streaming.",
+                username: "Username", password: "Password", loginBtn: "Secure Login",
+                voiceChannels: "VOICE CHANNELS", welcomeTitle: "Welcome to Command Center",
+                welcomeDesc: "Select a room from the sidebar or create a new tent to start streaming.",
+                newRoom: "Start New Tent", shareScreen: "Share Screen", chatTitle: "LIVE CHAT",
+                messageHint: "Send a message...", createRoomTitle: "Create New Tent",
+                roomName: "Tent Name", createBtn: "Establish Tent"
             }
         };
 
-        let state = {
-            lang: localStorage.getItem('layali_lang') || 'ar',
-            user: JSON.parse(localStorage.getItem('layali_user')) || null,
-            users: JSON.parse(localStorage.getItem('layali_db')) || [],
-            rooms: JSON.parse(localStorage.getItem('layali_rooms_db')) || [],
+        // --- 2. إدارة الحالة (State Management) ---
+        const AppState = {
+            lang: 'ar',
+            user: null,
+            rooms: JSON.parse(localStorage.getItem('org_rooms')) || [],
             activeRoom: null,
-            micActive: false,
-            screenActive: false,
-            audioContext: null,
-            analyser: null,
             stream: null,
-            pfp: "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            screenStream: null,
+            isMicOn: true,
+            isCamOn: false,
+            isCinemaMode: false
         };
 
-        // --- محرك التهيئة ---
+        // --- 3. محرك التهيئة ---
         function init() {
-            updateUI();
-            if(state.user) renderMain();
-            else showScreen('authScreen');
+            updateLanguageUI();
+            checkSession();
+            renderRoomList();
         }
 
-        function updateUI() {
-            const l = i18n[state.lang];
-            document.getElementById('htmlTag').lang = state.lang;
-            document.getElementById('htmlTag').dir = state.lang === 'ar' ? 'rtl' : 'ltr';
-            document.body.className = `lang-${state.lang}`;
-            document.getElementById('langLabel').innerText = state.lang === 'ar' ? 'English' : 'العربية';
-            
-            document.querySelectorAll('[data-key]').forEach(el => {
-                el.innerText = l[el.getAttribute('data-key')];
-            });
-            document.querySelectorAll('[data-placeholder]').forEach(el => {
-                el.placeholder = l[el.getAttribute('data-placeholder')];
-            });
+        function updateLanguageUI() {
+            const data = i18n[AppState.lang];
+            document.getElementById('masterHtml').lang = AppState.lang;
+            document.getElementById('masterHtml').dir = AppState.lang === 'ar' ? 'rtl' : 'ltr';
+            document.querySelectorAll('[data-key]').forEach(el => el.innerText = data[el.getAttribute('data-key')]);
+            document.querySelectorAll('[data-placeholder]').forEach(el => el.placeholder = data[el.getAttribute('data-placeholder')]);
+            document.querySelector('.lang-switch').innerText = AppState.lang === 'ar' ? 'EN' : 'AR';
         }
 
         function toggleLanguage() {
-            state.lang = state.lang === 'ar' ? 'en' : 'ar';
-            localStorage.setItem('layali_lang', state.lang);
-            updateUI();
+            AppState.lang = AppState.lang === 'ar' ? 'en' : 'ar';
+            updateLanguageUI();
         }
 
-        function showScreen(id) {
-            document.querySelectorAll('section, div[id$="App"], div[id$="View"]').forEach(s => s.classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
+        // --- 4. إدارة المستخدم والدخول ---
+        function handleAuth() {
+            const user = document.getElementById('userInput').value;
+            if (user.length < 3) return Swal.fire('Error', 'Username too short', 'error');
+
+            AppState.user = { name: user, id: 'ID_' + Date.now() };
+            localStorage.setItem('org_user', JSON.stringify(AppState.user));
+            
+            document.getElementById('authOverlay').classList.add('animate__fadeOut');
+            setTimeout(() => {
+                document.getElementById('authOverlay').classList.add('hidden');
+                document.getElementById('appInterface').classList.remove('hidden');
+                document.getElementById('userNameDisplay').innerText = user;
+                document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?name=${user}&background=d4af37&color=000&bold=true`;
+            }, 500);
         }
 
-        // --- إدارة الحسابات ---
-        function handlePfp(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    state.pfp = e.target.result;
-                    document.getElementById('pfpPreview').src = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
+        function checkSession() {
+            const saved = localStorage.getItem('org_user');
+            if (saved) {
+                AppState.user = JSON.parse(saved);
+                document.getElementById('authOverlay').classList.add('hidden');
+                document.getElementById('appInterface').classList.remove('hidden');
+                document.getElementById('userNameDisplay').innerText = AppState.user.name;
             }
         }
 
-        function switchAuth(isLogin) {
-            document.getElementById('regBox').classList.toggle('hidden', isLogin);
-            document.getElementById('loginBox').classList.toggle('hidden', !isLogin);
-        }
-
-        function register() {
-            const u = document.getElementById('regUser').value;
-            const p = document.getElementById('regPass').value;
-            if(u.length < 3) return alert('الاسم قصير!');
-            
-            const newUser = { user: u, pass: p, avatar: state.pfp, gold: 1000 };
-            state.users.push(newUser);
-            localStorage.setItem('layali_db', JSON.stringify(state.users));
-            Swal.fire('تم!', 'أهلاً بك في المنظمة', 'success').then(() => switchAuth(true));
-        }
-
-        function login() {
-            const u = document.getElementById('logUser').value;
-            const p = document.getElementById('logPass').value;
-            const found = state.users.find(x => x.user === u && x.pass === p);
-            if(found) {
-                state.user = found;
-                localStorage.setItem('layali_user', JSON.stringify(found));
-                renderMain();
-            } else alert('خطأ في البيانات!');
-        }
-
-        // --- إدارة الغرف والبث ---
-        function renderMain() {
-            showScreen('mainApp');
-            document.getElementById('navPfp').src = state.user.avatar;
-            document.getElementById('navName').innerText = state.user.user;
-            document.getElementById('navGold').innerText = state.user.gold;
-            document.getElementById('liveCounter').innerText = Math.floor(Math.random()*500);
-            renderRooms();
-        }
-
-        function renderRooms() {
-            const grid = document.getElementById('roomsGrid');
-            grid.innerHTML = '';
-            if(state.rooms.length === 0) return document.getElementById('emptyRooms').classList.remove('hidden');
-            document.getElementById('emptyRooms').classList.add('hidden');
-
-            state.rooms.forEach(r => {
-                grid.innerHTML += `
-                    <div onclick="joinRoom('${r.id}')" class="glass-panel p-8 rounded-[2.5rem] hover:border-yellow-500 transition cursor-pointer group animate__animated animate__fadeInUp">
-                        <div class="flex justify-between items-start mb-6">
-                            <div class="w-16 h-16 rounded-2xl bg-yellow-500/10 flex items-center justify-center text-yellow-500 text-3xl">
-                                <i class="fas fa-microphone-lines"></i>
-                            </div>
-                            <span class="bg-green-500/20 text-green-500 px-3 py-1 rounded-full text-[10px] font-bold">ACTIVE</span>
-                        </div>
-                        <h4 class="text-xl font-black mb-2">${r.name}</h4>
-                        <p class="text-gray-500 text-sm mb-6">المضيف: ${r.host}</p>
-                        <div class="flex justify-between items-center">
-                            <div class="flex -space-x-3">
-                                <div class="w-8 h-8 rounded-full bg-slate-800 border-2 border-slate-900"></div>
-                                <div class="w-8 h-8 rounded-full bg-slate-700 border-2 border-slate-900"></div>
-                                <div class="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center text-[8px] text-black font-bold">+${r.members}</div>
-                            </div>
-                            <i class="fas fa-arrow-left text-yellow-500 group-hover:-translate-x-2 transition"></i>
-                        </div>
+        // --- 5. منطق الغرف (Core Engine) ---
+        function renderRoomList() {
+            const list = document.getElementById('roomList');
+            list.innerHTML = '';
+            AppState.rooms.forEach(room => {
+                list.innerHTML += `
+                    <div onclick="joinRoom('${room.id}')" class="group flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-white/5 transition mb-1">
+                        <i class="fas fa-volume-high text-gray-600 group-hover:text-yellow-500"></i>
+                        <span class="text-sm font-bold text-gray-400 group-hover:text-white">${room.name}</span>
                     </div>
                 `;
             });
         }
 
-        async function showCreateRoom() {
+        async function showCreateModal() {
             const { value: name } = await Swal.fire({
-                title: 'ما اسم خيمتك؟',
+                title: i18n[AppState.lang].createRoomTitle,
                 input: 'text',
-                inputPlaceholder: 'مثال: مجلس الذكر، سوالف رمضانية...',
-                background: '#020617', color: '#fff', confirmButtonColor: '#d4af37'
+                inputPlaceholder: i18n[AppState.lang].roomName,
+                background: '#0a0e14', color: '#fff',
+                confirmButtonText: i18n[AppState.lang].createBtn,
+                confirmButtonColor: '#d4af37'
             });
 
-            if(name) {
-                const newRoom = { id: Date.now(), name, host: state.user.user, members: 1, msgs: [] };
-                state.rooms.unshift(newRoom);
-                localStorage.setItem('layali_rooms_db', JSON.stringify(state.rooms));
+            if (name) {
+                const newRoom = { id: 'R_' + Date.now(), name, host: AppState.user.name };
+                AppState.rooms.push(newRoom);
+                localStorage.setItem('org_rooms', JSON.stringify(AppState.rooms));
+                renderRoomList();
                 joinRoom(newRoom.id);
             }
         }
 
-        function joinRoom(id) {
-            state.activeRoom = state.rooms.find(r => r.id == id);
-            showScreen('chatView');
-            document.getElementById('roomTitle').innerText = state.activeRoom.name;
-            document.getElementById('hostPfp').src = state.user.avatar;
-            document.getElementById('hostName').innerText = state.user.user;
+        async function joinRoom(id) {
+            AppState.activeRoom = AppState.rooms.find(r => r.id === id);
+            document.getElementById('welcomeView').classList.add('hidden');
+            document.getElementById('roomView').classList.remove('hidden');
+            document.getElementById('activeRoomName').innerText = AppState.activeRoom.name;
+            document.getElementById('screenShareBtn').classList.remove('hidden');
             
-            // تهيئة الصوت الحقيقي
-            initAudioVisualizer();
+            // تهيئة الوسائط
+            await setupMedia();
+            renderVideoGrid();
         }
 
-        function leaveRoom() {
-            if(state.stream) state.stream.getTracks().forEach(t => t.stop());
-            state.activeRoom = null;
-            renderMain();
-        }
-
-        // --- الميزات التقنية (صوت، شاشة، موجات) ---
-        async function initAudioVisualizer() {
+        async function setupMedia() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                state.stream = stream;
-                state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                state.analyser = state.audioContext.createAnalyser();
-                const source = state.audioContext.createMediaStreamSource(stream);
-                source.connect(state.analyser);
-                state.analyser.fftSize = 64;
-                
-                drawVisualizer();
+                AppState.stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+                // كتم الفيديو افتراضياً
+                AppState.stream.getVideoTracks().forEach(t => t.enabled = false);
             } catch (err) {
-                console.log("Audio Error:", err);
+                console.error("Media Error:", err);
+                Swal.fire('Media Error', 'Please allow camera/mic access', 'error');
             }
         }
 
-        function drawVisualizer() {
-            const canvas = document.getElementById('audioVisualizer');
-            const ctx = canvas.getContext('2d');
-            const bufferLength = state.analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-
-            function draw() {
-                if(!state.activeRoom) return;
-                requestAnimationFrame(draw);
-                state.analyser.getByteFrequencyData(dataArray);
-
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                const barWidth = (canvas.width / bufferLength) * 2.5;
-                let x = 0;
-
-                dataArray.forEach(val => {
-                    const barHeight = val / 2;
-                    ctx.fillStyle = `rgb(212, 175, 55)`;
-                    ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-                    x += barWidth + 2;
-
-                    // تأثير حلقة الصوت حول الأفاتار
-                    if(val > 50) {
-                        document.getElementById('voiceRing').style.opacity = val/255;
-                        document.getElementById('voiceRing').style.transform = `scale(${1 + val/255})`;
-                    } else {
-                        document.getElementById('voiceRing').style.opacity = 0;
-                    }
-                });
+        function renderVideoGrid() {
+            const grid = document.getElementById('mainVideoGrid');
+            grid.innerHTML = '';
+            
+            // إضافة بطاقتك الشخصية
+            const myCard = document.createElement('div');
+            myCard.className = `video-card ${AppState.screenStream ? 'sharing-screen' : ''}`;
+            myCard.innerHTML = `
+                <video id="myLocalVideo" autoplay playsinline class="w-full h-full object-cover"></video>
+                <div class="absolute bottom-4 left-4 flex items-center gap-2 bg-black/60 px-3 py-1 rounded-full border border-white/10">
+                    <span class="text-[10px] font-black">${AppState.user.name} (أنت)</span>
+                </div>
+            `;
+            grid.appendChild(myCard);
+            
+            const v = document.getElementById('myLocalVideo');
+            v.srcObject = AppState.screenStream ? AppState.screenStream : AppState.stream;
+            
+            // محاكي لمستخدمين آخرين لتوضيح القوة
+            for(let i=0; i<2; i++) {
+                grid.innerHTML += `
+                    <div class="video-card bg-slate-900 flex items-center justify-center">
+                        <div class="w-20 h-20 rounded-full bg-yellow-500/20 flex items-center justify-center border border-yellow-500/10">
+                            <i class="fas fa-user text-3xl text-yellow-500/30"></i>
+                        </div>
+                        <div class="absolute bottom-4 left-4 bg-black/60 px-3 py-1 rounded-full text-[10px]">عضو المنظمة #${i+1}</div>
+                    </div>
+                `;
             }
-            draw();
         }
 
-        function toggleMic() {
-            state.micActive = !state.micActive;
-            const btn = document.getElementById('micBtn');
-            btn.classList.toggle('active', !state.micActive);
-            state.stream.getAudioTracks()[0].enabled = state.micActive;
-            document.getElementById('roomStatus').innerText = state.micActive ? 'أنت تتحدث الآن...' : 'الميكروفون مكتوم';
+        // --- 6. مشاركة الشاشة وملء الشاشة ---
+        async function startScreenShare() {
+            try {
+                AppState.screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                renderVideoGrid();
+                
+                AppState.screenStream.getVideoTracks()[0].onended = () => {
+                    AppState.screenStream = null;
+                    renderVideoGrid();
+                };
+            } catch (err) { console.error(err); }
         }
 
-        async function toggleScreenShare() {
-            const container = document.getElementById('screenShareContainer');
-            const video = document.getElementById('screenVideo');
-
-            if(!state.screenActive) {
-                try {
-                    const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-                    video.srcObject = screenStream;
-                    container.style.display = 'block';
-                    state.screenActive = true;
-                    document.getElementById('screenBtn').classList.add('active');
-                    
-                    screenStream.getVideoTracks()[0].onended = () => toggleScreenShare();
-                } catch(e) { console.log(e); }
+        function toggleCinemaMode() {
+            AppState.isCinemaMode = !AppState.isCinemaMode;
+            const overlay = document.getElementById('cinemaOverlay');
+            const container = document.getElementById('cinemaContainer');
+            
+            if (AppState.isCinemaMode) {
+                overlay.classList.remove('hidden');
+                const videoClone = document.createElement('video');
+                videoClone.autoplay = true;
+                videoClone.playsinline = true;
+                videoClone.className = "w-full h-full object-contain shadow-2xl rounded-2xl";
+                videoClone.srcObject = AppState.screenStream ? AppState.screenStream : AppState.stream;
+                container.innerHTML = '';
+                container.appendChild(videoClone);
+                
+                // Fullscreen API
+                if (container.requestFullscreen) container.requestFullscreen();
             } else {
-                let tracks = video.srcObject.getTracks();
-                tracks.forEach(t => t.stop());
-                container.style.display = 'none';
-                state.screenActive = false;
-                document.getElementById('screenBtn').classList.remove('active');
+                overlay.classList.add('hidden');
+                if (document.exitFullscreen) document.exitFullscreen();
             }
         }
 
-        function sendMsg() {
-            const inp = document.getElementById('msgInput');
-            if(!inp.value.trim()) return;
-            Swal.fire({
-                toast: true, position: 'top', title: `${state.user.user}: ${inp.value}`,
-                showConfirmButton: false, timer: 3000, background: '#1e1b4b', color: '#fff'
-            });
+        // --- 7. أزرار التحكم ---
+        function toggleAudio() {
+            AppState.isMicOn = !AppState.isMicOn;
+            AppState.stream.getAudioTracks().forEach(t => t.enabled = AppState.isMicOn);
+            document.getElementById('micBtn').classList.toggle('bg-red-600', !AppState.isMicOn);
+            document.getElementById('micBtn').innerHTML = `<i class="fas fa-microphone${AppState.isMicOn ? '' : '-slash'}"></i>`;
+        }
+
+        function toggleVideo() {
+            AppState.isCamOn = !AppState.isCamOn;
+            AppState.stream.getVideoTracks().forEach(t => t.enabled = AppState.isCamOn);
+            document.getElementById('camBtn').classList.toggle('bg-red-600', !AppState.isCamOn);
+            document.getElementById('camBtn').innerHTML = `<i class="fas fa-video${AppState.isCamOn ? '' : '-slash'}"></i>`;
+        }
+
+        function exitRoom() {
+            if (AppState.stream) AppState.stream.getTracks().forEach(t => t.stop());
+            if (AppState.screenStream) AppState.screenStream.getTracks().forEach(t => t.stop());
+            AppState.activeRoom = null;
+            document.getElementById('roomView').classList.add('hidden');
+            document.getElementById('welcomeView').classList.remove('hidden');
+            document.getElementById('activeRoomName').innerText = "اكتشف المنظمة";
+        }
+
+        // --- 8. الدردشة ---
+        function sendMessage() {
+            const inp = document.getElementById('chatInput');
+            const msg = inp.value.trim();
+            if (!msg) return;
+
+            const box = document.getElementById('chatMessages');
+            box.innerHTML += `
+                <div class="animate__animated animate__fadeInUp">
+                    <p class="text-[10px] font-black text-yellow-500 mb-1">${AppState.user.name}</p>
+                    <div class="bg-white/5 p-3 rounded-xl rounded-tl-none border border-white/5 text-sm">
+                        ${msg}
+                    </div>
+                </div>
+            `;
             inp.value = '';
-        }
-
-        function sendEmoji(e) {
-            Swal.fire({
-                title: e,
-                showConfirmButton: false,
-                timer: 1500,
-                background: 'transparent',
-                customClass: { popup: 'animate__animated animate__bounceIn' }
-            });
-        }
-
-        function logout() {
-            localStorage.removeItem('layali_user');
-            location.reload();
+            box.scrollTop = box.scrollHeight;
         }
 
         window.onload = init;
