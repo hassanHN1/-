@@ -2,101 +2,99 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>منظمة ليالي العرب | السينما المفتوحة</title>
+    <title>منظمة ليالي العرب | كاسر الحصار</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;900&display=swap');
-        body { background: #050505; color: white; font-family: 'Cairo', sans-serif; }
-        .gold-text { color: #d4af37; }
-        .movie-card { background: #111; border-radius: 10px; overflow: hidden; transition: 0.3s; cursor: pointer; border: 1px solid #222; }
-        .movie-card:hover { transform: scale(1.05); border-color: #d4af37; }
+        body { background: #000; color: white; font-family: 'Cairo', sans-serif; }
+        .gold-border { border: 1px solid #d4af37; }
+        .btn-gold { background: #d4af37; color: #000; font-weight: 900; transition: 0.3s; }
+        .btn-gold:hover { background: #fff; transform: scale(1.05); }
+        iframe { width: 100%; height: 100%; border: none; background: #000; }
         #player-overlay { position: fixed; inset: 0; background: black; z-index: 9999; display: none; }
-        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
     <div id="player-overlay">
-        <button onclick="closePlayer()" class="absolute top-5 left-5 bg-yellow-600 text-black px-6 py-2 rounded-full font-bold z-[10001]">إغلاق ×</button>
+        <div class="absolute top-4 right-4 z-[10000] flex gap-2">
+            <button onclick="closePlayer()" class="bg-red-600 px-6 py-2 rounded-full font-bold">إغلاق ×</button>
+        </div>
         <div id="videoContainer" class="w-full h-full"></div>
     </div>
 
-    <header class="p-6 bg-black border-b border-yellow-600/20 flex justify-between items-center sticky top-0 z-50">
-        <h1 class="text-2xl font-black gold-text">ليالي العرب <span class="text-white text-xs">V.FINAL</span></h1>
-        <div class="flex gap-2">
-            <input type="text" id="searchInput" placeholder="اكتب اسم الفيلم بالإنجليزية..." class="bg-zinc-900 border border-zinc-800 p-2 rounded-lg text-sm w-64 outline-none focus:border-yellow-600">
-            <button onclick="searchMovies()" class="bg-yellow-600 text-black px-4 py-2 rounded-lg font-bold text-sm">بحث</button>
-        </div>
+    <header class="p-6 text-center border-b border-zinc-800 bg-zinc-900/50">
+        <h1 class="text-3xl font-black text-[#d4af37] mb-2 uppercase">Layali Al Arab Cinema</h1>
+        <p class="text-xs text-gray-500">نظام التشغيل المباشر - نسخة تجاوز الحجب</p>
     </header>
 
-    <main class="p-8">
-        <div class="mb-10 p-6 bg-yellow-600/10 border border-yellow-600/20 rounded-2xl flex justify-between items-center">
-            <div>
-                <h2 class="text-xl font-bold">مرحباً بك في ديوان المنظمة</h2>
-                <p class="text-xs text-gray-400">إذا لم تظهر الأفلام، اضغط على زر "تنشيط الجلب"</p>
+    <main class="p-6 max-w-4xl mx-auto">
+        <div class="bg-zinc-900 p-8 rounded-3xl gold-border mb-10 text-center animate__animated animate__fadeIn">
+            <i class="fas fa-bolt text-4xl text-[#d4af37] mb-4"></i>
+            <h2 class="text-xl font-bold mb-6">تشغيل أي فيلم فوراً</h2>
+            <div class="flex flex-col gap-4">
+                <input type="text" id="manualSearch" placeholder="اكتب اسم الفيلم بالإنجليزية (مثلاً: John Wick)" 
+                       class="bg-black border border-zinc-700 p-4 rounded-xl text-center outline-none focus:border-[#d4af37]">
+                <button onclick="quickPlay()" class="btn-gold p-4 rounded-xl">تشغيل السيرفر العالمي 1 ⚡</button>
+                <button onclick="quickPlayAlt()" class="bg-white text-black font-black p-4 rounded-xl">تشغيل السيرفر العالمي 2 🎬</button>
             </div>
-            <button onclick="fetchMovies()" class="bg-yellow-600 text-black px-6 py-2 rounded-full font-bold animate-bounce">تنشيط الجلب ⚡</button>
+            <p class="text-[10px] text-gray-500 mt-4 uppercase">ملاحظة: إذا لم يظهر شيء، اكتب اسم الفيلم واضغط تشغيل</p>
         </div>
 
-        <div id="movieGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+        <h3 class="text-lg font-bold mb-6 border-r-4 border-[#d4af37] pr-3">أفلام جاهزة للمشاهدة</h3>
+        <div id="defaultMovies" class="grid grid-cols-2 md:grid-cols-3 gap-4">
             </div>
     </main>
 
     <script>
-        // مفتاح احتياطي فعال جداً
-        const API_KEY = '8d6d9194546435662aa063955619f697';
-        
-        async function fetchMovies() {
-            const grid = document.getElementById('movieGrid');
-            grid.innerHTML = '<div class="col-span-full text-center py-10">جاري سحب الأفلام من الخزنة...</div>';
-            
-            try {
-                // جلب الأفلام الشائعة
-                const resp = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=ar-SA&page=1`);
-                const data = await resp.json();
-                render(data.results);
-            } catch (e) {
-                grid.innerHTML = '<div class="col-span-full text-center text-red-500">حدث خطأ في الشبكة. جرب استخدام VPN أو متصفح آخر.</div>';
-            }
-        }
+        // قائمة أفلام "الطوارئ" - تعمل بدون API
+        const emergencyMovies = [
+            { id: 157336, title: "Interstellar", img: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6vS6o6oPEgx6A.jpg" },
+            { id: 27205, title: "Inception", img: "https://image.tmdb.org/t/p/w500/edv5CZvRjS99vS6YkdIStandard.jpg" },
+            { id: 299536, title: "Avengers: Infinity War", img: "https://image.tmdb.org/t/p/w500/7WsyChvRStvS0kmOR0pL3tkyvS9.jpg" },
+            { id: 155, title: "The Dark Knight", img: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDp9QmSbmvQY2sqAbUc.jpg" }
+        ];
 
-        async function searchMovies() {
-            const query = document.getElementById('searchInput').value;
-            if(!query) return;
-            const resp = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}&language=ar-SA`);
-            const data = await resp.json();
-            render(data.results);
-        }
-
-        function render(movies) {
-            const grid = document.getElementById('movieGrid');
-            grid.innerHTML = '';
-            movies.forEach(m => {
-                if(!m.poster_path) return;
-                const card = document.createElement('div');
-                card.className = 'movie-card';
-                card.innerHTML = `
-                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" class="w-full h-64 object-cover">
-                    <div class="p-3">
-                        <p class="text-xs font-bold truncate">${m.title}</p>
-                        <p class="text-[10px] text-yellow-600 mt-1">★ ${m.vote_average}</p>
-                    </div>
+        function loadEmergency() {
+            const grid = document.getElementById('defaultMovies');
+            emergencyMovies.forEach(m => {
+                const div = document.createElement('div');
+                div.className = "bg-zinc-900 rounded-xl overflow-hidden cursor-pointer gold-border hover:scale-105 transition";
+                div.innerHTML = `
+                    <img src="${m.img}" class="w-full h-48 object-cover opacity-80">
+                    <div class="p-3 text-center text-xs font-bold">${m.title}</div>
                 `;
-                card.onclick = () => openPlayer(m.id);
-                grid.appendChild(card);
+                div.onclick = () => openPlayer(m.id);
+                grid.appendChild(div);
             });
         }
 
+        function quickPlay() {
+            const name = document.getElementById('manualSearch').value;
+            if(!name) {
+                Swal.fire('تنبيه', 'اكتب اسم الفيلم أولاً يا قائد', 'warning');
+                return;
+            }
+            // تشغيل عبر البحث بالاسم مباشرة في السيرفر
+            const url = `https://vidsrc.to/embed/movie/${name.toLowerCase().replace(/ /g, '-')}`;
+            document.getElementById('player-overlay').style.display = 'block';
+            document.getElementById('videoContainer').innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
+        }
+
+        function quickPlayAlt() {
+            const name = document.getElementById('manualSearch').value;
+            if(!name) return;
+            // سيرفر بديل
+            const url = `https://vidsrc.me/embed/movie?title=${encodeURIComponent(name)}`;
+            document.getElementById('player-overlay').style.display = 'block';
+            document.getElementById('videoContainer').innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
+        }
+
         function openPlayer(id) {
-            const overlay = document.getElementById('player-overlay');
-            const container = document.getElementById('videoContainer');
-            // السيرفر الأكثر استقراراً في العالم حالياً
-            const url = `https://vidsrc.me/embed/movie?tmdb=${id}`;
-            
-            overlay.style.display = 'block';
-            container.innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
+            document.getElementById('player-overlay').style.display = 'block';
+            document.getElementById('videoContainer').innerHTML = `<iframe src="https://vidsrc.me/embed/movie?tmdb=${id}" allowfullscreen></iframe>`;
         }
 
         function closePlayer() {
@@ -104,8 +102,8 @@
             document.getElementById('videoContainer').innerHTML = '';
         }
 
-        // تشغيل تلقائي
-        fetchMovies();
+        // تشغيل أفلام الطوارئ فوراً
+        loadEmergency();
     </script>
 </body>
 </html>
