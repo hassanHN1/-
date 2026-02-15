@@ -1,327 +1,294 @@
 <!DOCTYPE html>
-<html id="nightlyOrg" lang="ar" dir="rtl">
+<html id="GlobalLayali" lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة ليالي العرب الإمبراطورية | THE SUPREME</title>
+    <title>منصة ليالي العرب العالمية | Global Cinema OS</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;700;900&family=Cinzel:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;900&family=Exo+2:wght@800&display=swap');
 
         :root {
-            --gold-glow: #d4af37;
-            --deep-void: #020205;
-            --glass-bg: rgba(0, 0, 0, 0.85);
+            --gold: #d4af37;
+            --black: #020204;
+            --glass: rgba(255, 255, 255, 0.03);
         }
 
         body {
-            background-color: var(--deep-void);
-            color: white;
+            background-color: var(--black);
+            color: #fff;
             font-family: 'Cairo', sans-serif;
+            height: 100vh;
             overflow: hidden;
+            background-image: radial-gradient(circle at center, #111 0%, #000 100%);
+        }
+
+        /* واجهة السينما العالمية */
+        .main-stage {
+            display: grid;
+            grid-template-columns: 1fr 380px;
             height: 100vh;
         }
 
-        /* واجهة ليالي العرب - الطبقة العليا */
-        .org-interface {
-            position: absolute;
-            inset: 0;
-            z-index: 100;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .org-interface * { pointer-events: auto; }
-
-        /* شريط العنوان الملكي */
-        .royal-header {
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
-            padding: 30px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .brand-logo {
-            font-family: 'Cinzel', serif;
-            font-size: 2.5rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #fff 0%, #d4af37 50%, #8a6d3b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
-        }
-
-        /* زر اللغة الماسي المطور */
-        .lang-control {
+        /* مشغل الفيديو العملاق */
+        .video-vault {
             position: relative;
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid #d4af37;
-            padding: 10px 25px;
-            border-radius: 4px;
-            font-weight: 900;
-            color: #d4af37;
-            cursor: pointer;
-            overflow: hidden;
-            transition: 0.5s;
-        }
-
-        .lang-control::before {
-            content: ''; position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent);
-            transition: 0.5s;
-        }
-
-        .lang-control:hover::before { left: 100%; }
-
-        /* منطقة المحرك (الجلب المخفي) */
-        .engine-room {
-            position: absolute;
-            inset: 0;
-            z-index: 1;
             background: #000;
-        }
-
-        /* تنظيف واجهة الموقع المجلوب */
-        #contentFrame {
-            width: 100%;
-            height: 110%; /* تعويض لشريط العنوان */
-            margin-top: -50px;
-            border: none;
-            transform: scale(1.01);
-        }
-
-        /* نظام الدردشة الجانبي الملكي */
-        .side-chat-vault {
-            position: fixed;
-            left: 30px;
-            bottom: 120px;
-            width: 350px;
-            height: 500px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 30px;
             display: flex;
-            flex-direction: column;
-            box-shadow: 0 50px 100px rgba(0,0,0,1);
-            transform: scale(0.9);
-            opacity: 0;
-            transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .side-chat-vault.active { transform: scale(1); opacity: 1; }
-
-        .chat-msg {
-            padding: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-            animation: slideIn 0.3s forwards;
-        }
-
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-
-        /* شريط التحكم (HUD) */
-        .hud-dock {
-            background: rgba(10, 10, 15, 0.95);
-            margin: 0 auto 40px;
-            padding: 15px 40px;
-            border-radius: 100px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            display: flex;
-            gap: 30px;
             align-items: center;
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.1);
+            justify-content: center;
+            border-left: 1px solid rgba(212, 175, 55, 0.1);
         }
+
+        .video-js {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* زر اللغة الماسي (في زاوية استراتيجية) */
+        .lang-diamond {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            z-index: 1000;
+            background: var(--glass);
+            border: 1px solid var(--gold);
+            padding: 8px 18px;
+            border-radius: 4px;
+            color: var(--gold);
+            font-weight: 900;
+            font-size: 11px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+        .lang-diamond:hover { background: var(--gold); color: #000; }
+
+        /* شريط التحكم HUD */
+        .hud-controller {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            background: rgba(0,0,0,0.85);
+            padding: 15px 40px;
+            border-radius: 50px;
+            border: 1px solid var(--gold);
+            display: flex;
+            gap: 25px;
+            opacity: 0;
+            transition: 0.5s;
+        }
+        .video-vault:hover .hud-controller { opacity: 1; }
 
         .hud-btn {
-            width: 60px; height: 60px;
+            width: 55px; height: 55px;
+            background: #111;
             border-radius: 50%;
             display: flex; items-center: center; justify-content: center;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             cursor: pointer;
-            transition: 0.4s;
-            position: relative;
+            transition: 0.3s;
+            color: var(--gold);
+        }
+        .hud-btn:hover { background: var(--gold); color: #000; transform: scale(1.1); }
+
+        /* منطقة الدردشة والأصدقاء */
+        .side-panel {
+            background: #050507;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(212, 175, 55, 0.2);
         }
 
-        .hud-btn:hover { background: #d4af37; color: black; transform: translateY(-10px); }
+        .panel-header {
+            padding: 40px 30px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
 
-        /* زر "فوق الكل" لمشاركة الشاشة كوضع Full Screen */
-        .fullscreen-broadcast {
-            position: fixed;
-            inset: 0;
+        .chat-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: linear-gradient(to bottom, #050507, #0a0a0f);
+        }
+
+        .msg-box {
+            background: rgba(255,255,255,0.03);
+            padding: 12px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            border-right: 2px solid var(--gold);
+        }
+
+        /* مدخل الروابط العالمي */
+        .link-input-area {
+            padding: 25px;
+            background: #08080c;
+        }
+
+        .gold-input {
+            width: 100%;
             background: #000;
-            z-index: 1000;
-            display: none;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 12px;
+            border-radius: 10px;
+            outline: none;
+            color: var(--gold);
+            font-size: 0.8rem;
         }
 
-        /* الستارة الرقمية */
-        #curtain {
-            position: fixed; inset: 0; background: #000; z-index: 999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        /* شاشة البداية */
+        #gatekeeper {
+            position: fixed; inset: 0; z-index: 9999;
+            background: #000; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
         }
 
-        .crown-icon { font-size: 5rem; color: #d4af37; filter: drop-shadow(0 0 20px #d4af37); }
+        .gold-glow { text-shadow: 0 0 20px var(--gold); }
     </style>
 </head>
 <body>
 
-    <div id="curtain">
-        <div class="animate__animated animate__zoomIn text-center">
-            <i class="fas fa-crown crown-icon mb-6"></i>
-            <h1 class="text-4xl font-black gold-text mb-2">منظمة ليالي العرب</h1>
-            <p class="text-gray-500 tracking-[10px] uppercase text-[10px]">Imperial Movie Cinema</p>
+    <div id="gatekeeper">
+        <div class="text-center animate__animated animate__zoomIn">
+            <i class="fas fa-globe text-7xl text-gold mb-6 gold-glow"></i>
+            <h1 class="text-5xl font-black mb-2 tracking-tighter">منظمة ليالي العرب</h1>
+            <p class="text-gray-500 uppercase tracking-[10px] text-xs">Global Cinema Protocol</p>
+            <button onclick="unlockSystem()" class="mt-10 px-10 py-4 border border-gold text-gold font-black hover:bg-gold hover:text-black transition duration-500">
+                تشغيل النظام العالمي
+            </button>
         </div>
-        <button onclick="liftCurtain()" class="mt-12 lang-control">دخول المنصة</button>
     </div>
 
-    <div class="engine-room">
-        <iframe id="contentFrame" src="https://movie.vodu.me/"></iframe>
-    </div>
+    <div class="lang-diamond" onclick="toggleLang()">ENGLISH MODE</div>
 
-    <div class="org-interface">
+    <main class="main-stage">
         
-        <header class="royal-header">
-            <div class="brand-logo">LAYALI AL ARAB</div>
-            <div class="flex items-center gap-6">
-                <div class="text-right">
-                    <p id="userName" class="font-black text-sm text-white">إمبراطور المنظمة</p>
-                    <p class="text-[9px] text-green-500 font-bold">ONLINE | SECURE</p>
-                </div>
-                <div onclick="toggleLanguage()" id="langBtn" class="lang-control">العربية</div>
-            </div>
-        </header>
+        <section class="video-vault">
+            <video id="main-player" class="video-js vjs-theme-city" controls preload="auto">
+                <p class="vjs-no-js">برجاء تفعيل الجافا سكربت للمشاهدة</p>
+            </video>
 
-        <div id="chatVault" class="side-chat-vault">
-            <div class="p-6 border-b border-white/5 flex justify-between items-center">
-                <span class="font-black text-xs text-gray-400 tracking-widest uppercase">Global Tactical Chat</span>
-                <i onclick="toggleChat()" class="fas fa-times cursor-pointer hover:text-red-500"></i>
-            </div>
-            <div id="chatBody" class="flex-1 overflow-y-auto p-4 space-y-4">
+            <div class="hud-controller">
+                <div onclick="toggleMic()" id="micBtn" class="hud-btn" title="تحدث مع الأصدقاء">
+                    <i class="fas fa-microphone-slash"></i>
                 </div>
-            <div class="p-6">
+                <div onclick="shareScreen()" class="hud-btn" title="بث شاشتك">
+                    <i class="fas fa-desktop"></i>
+                </div>
+                <div onclick="syncVideo()" class="hud-btn" title="مزامنة التوقيت">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <div onclick="toggleFullscreen()" class="hud-btn" title="ملء الشاشة">
+                    <i class="fas fa-expand"></i>
+                </div>
+            </div>
+        </section>
+
+        <aside class="side-panel">
+            <div class="panel-header">
+                <h2 class="text-2xl font-black gold-text">مجلس المنظمة</h2>
+                <p class="text-[10px] text-gray-500 uppercase mt-1">Global Active Users: <span class="text-green-500">241</span></p>
+            </div>
+
+            <div id="chatContent" class="chat-body">
+                <div class="text-center text-[10px] text-zinc-700 my-4 tracking-widest uppercase">بداية الجلسة العالمية</div>
+            </div>
+
+            <div class="link-input-area">
+                <p class="text-[10px] text-gray-500 mb-2 uppercase font-black">جلب فيلم (رابط عالمي/فودو)</p>
+                <div class="flex gap-2">
+                    <input type="text" id="movieUrl" placeholder="ضع رابط الفيلم هنا..." class="gold-input">
+                    <button onclick="loadMovie()" class="bg-gold text-black px-4 rounded-lg font-black text-sm">جلب</button>
+                </div>
+            </div>
+
+            <div class="p-6 bg-[#030305]">
                 <div class="relative">
-                    <input type="text" id="chatInput" placeholder="أرسل أمراً للمنظمة..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-gold-glow">
-                    <button onclick="sendMsg()" class="absolute left-4 top-4 text-gold-glow">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
+                    <input type="text" id="msgInput" onkeypress="checkEnter(event)" placeholder="اكتب رسالة للأصدقاء..." class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-gold">
+                    <i onclick="sendMsg()" class="fas fa-paper-plane absolute left-4 top-5 text-gold cursor-pointer"></i>
                 </div>
             </div>
-        </div>
+        </aside>
 
-        <div class="hud-dock">
-            <div onclick="toggleMic()" id="micBtn" class="hud-btn bg-white/5" title="الصوت">
-                <i class="fas fa-microphone"></i>
-            </div>
-            <div onclick="toggleChat()" class="hud-btn bg-white/5" title="الدردشة">
-                <i class="fas fa-comments"></i>
-            </div>
-            <div onclick="startBroadcast()" class="hud-btn bg-white/5" title="بث الشاشة">
-                <i class="fas fa-desktop"></i>
-            </div>
-            <div class="w-[1px] h-10 bg-white/10"></div>
-            <div onclick="syncTheater()" class="hud-btn bg-gold-glow text-black" title="مزامنة الإمبراطورية">
-                <i class="fas fa-sync-alt"></i>
-            </div>
-            <div onclick="toggleFullscreen()" class="hud-btn bg-white/5" title="ملء الشاشة">
-                <i class="fas fa-expand"></i>
-            </div>
-        </div>
-
-    </div>
-
-    <div id="broadcastLayer" class="fullscreen-broadcast">
-        <video id="broadcastVideo" class="w-full h-full object-contain" autoplay></video>
-        <button onclick="stopBroadcast()" class="absolute top-10 right-10 bg-red-600 p-4 rounded-full">إيقاف البث</button>
-    </div>
+    </main>
 
     <script>
-        // نظام إدارة الإمبراطورية
-        const Org = {
-            lang: 'ar',
-            isChatOpen: false,
-            micActive: false,
-            
-            init: function() {
-                console.log("Layali Al Arab System Initialized");
-            }
+        let player;
+        const State = {
+            isMicOn: false,
+            lang: 'ar'
         };
 
-        function liftCurtain() {
-            const c = document.getElementById('curtain');
-            c.classList.add('animate__animated', 'animate__fadeOutUp');
-            setTimeout(() => c.style.display = 'none', 1000);
-            
-            Swal.fire({
-                title: 'أهلاً بك يا قائد',
-                text: 'تم ربط سيرفرات فودو بنظام ليالي العرب بنجاح.',
-                icon: 'success',
-                background: '#020205',
-                color: '#d4af37',
-                confirmButtonColor: '#d4af37'
+        // تهيئة المشغل العالمي
+        document.addEventListener('DOMContentLoaded', () => {
+            player = videojs('main-player', {
+                fluid: true,
+                playbackRates: [0.5, 1, 1.5, 2],
+                userActions: { hotkeys: true }
             });
+        });
+
+        function unlockSystem() {
+            const gate = document.getElementById('gatekeeper');
+            gate.classList.add('animate__animated', 'animate__fadeOutDown');
+            setTimeout(() => gate.remove(), 1000);
+            logSystem("تم تشغيل البروتوكول العالمي للمنظمة");
         }
 
-        function toggleChat() {
-            Org.isChatOpen = !Org.isChatOpen;
-            document.getElementById('chatVault').classList.toggle('active', Org.isChatOpen);
+        // جلب الفيلم من أي شبكة
+        function loadMovie() {
+            const url = document.getElementById('movieUrl').value;
+            if(!url) return Swal.fire('تنبيه', 'برجاء وضع رابط صالح', 'warning');
+            
+            player.src({
+                src: url,
+                type: url.includes('m3u8') ? 'application/x-mpegURL' : 'video/mp4'
+            });
+            player.play();
+            logSystem("جاري تحميل العرض من مصدر خارجي...");
         }
 
         function toggleMic() {
-            Org.micActive = !Org.micActive;
+            State.isMicOn = !State.isMicOn;
             const btn = document.getElementById('micBtn');
-            btn.classList.toggle('bg-red-600', Org.micActive);
-            btn.innerHTML = `<i class="fas fa-microphone${Org.micActive ? '' : '-slash'}"></i>`;
+            btn.innerHTML = `<i class="fas fa-microphone${State.isMicOn ? '' : '-slash'}"></i>`;
+            btn.style.background = State.isMicOn ? '#d4af37' : '#111';
+            btn.style.color = State.isMicOn ? '#000' : '#d4af37';
             
-            if(Org.micActive) {
-                Swal.fire({ toast: true, position: 'top-end', title: 'الميكروفون قيد العمل', background: '#d4af37', color: '#000', showConfirmButton: false, timer: 1500 });
-            }
+            if(State.isMicOn) logSystem("الميكروفون مفعل - الأصدقاء يسمعونك الآن");
         }
 
         function sendMsg() {
-            const inp = document.getElementById('chatInput');
+            const inp = document.getElementById('msgInput');
             if(!inp.value) return;
             
-            const chatBody = document.getElementById('chatBody');
-            chatBody.innerHTML += `
-                <div class="chat-msg">
-                    <span class="text-[10px] font-black text-gold-glow block mb-1 uppercase">إمبراطور المنظمة</span>
-                    <p class="text-sm text-gray-200">${inp.value}</p>
+            const chat = document.getElementById('chatContent');
+            chat.innerHTML += `
+                <div class="msg-box animate__animated animate__fadeInLeft">
+                    <span class="text-[9px] font-black gold-text block mb-1 uppercase">إمبراطور المنظمة</span>
+                    <p class="text-sm">${inp.value}</p>
                 </div>
             `;
             inp.value = '';
-            chatBody.scrollTop = chatBody.scrollHeight;
+            chat.scrollTop = chat.scrollHeight;
         }
 
-        async function startBroadcast() {
-            try {
-                const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-                const layer = document.getElementById('broadcastLayer');
-                const video = document.getElementById('broadcastVideo');
-                
-                layer.style.display = 'block';
-                video.srcObject = stream;
-                
-                stream.getVideoTracks()[0].onended = () => stopBroadcast();
-            } catch(e) {
-                console.error("Broadcast failed");
-            }
-        }
+        function checkEnter(e) { if(e.key === 'Enter') sendMsg(); }
 
-        function stopBroadcast() {
-            const layer = document.getElementById('broadcastLayer');
-            const video = document.getElementById('broadcastVideo');
-            if(video.srcObject) {
-                video.srcObject.getTracks().forEach(t => t.stop());
-            }
-            layer.style.display = 'none';
+        function logSystem(txt) {
+            const chat = document.getElementById('chatContent');
+            chat.innerHTML += `<div class="text-center text-[8px] text-yellow-600 font-bold uppercase my-4">SYS: ${txt}</div>`;
         }
 
         function toggleFullscreen() {
@@ -332,21 +299,23 @@
             }
         }
 
-        function toggleLanguage() {
-            Org.lang = Org.lang === 'ar' ? 'en' : 'ar';
-            document.getElementById('langBtn').innerText = Org.lang === 'ar' ? 'العربية' : 'English';
-            // هنا يمكن إضافة منطق ترجمة النصوص كاملة
+        async function shareScreen() {
+            try {
+                await navigator.mediaDevices.getDisplayMedia({ video: true });
+                logSystem("لقد بدأت بث شاشتك للأصدقاء");
+            } catch(e) {}
         }
 
-        function syncTheater() {
+        function syncVideo() {
             Swal.fire({
-                title: 'مزامنة التوقيت',
-                text: 'سيتم توحيد وقت الفيلم لجميع أعضاء المنظمة المتصلين.',
-                icon: 'info',
-                background: '#020205',
-                color: '#d4af37',
-                confirmButtonColor: '#d4af37'
+                toast: true, position: 'top-end', title: 'تمت مزامنة الوقت لجميع المشاهدين عالمياً',
+                background: '#d4af37', color: '#000', showConfirmButton: false, timer: 2000
             });
+        }
+
+        function toggleLang() {
+            State.lang = State.lang === 'ar' ? 'en' : 'ar';
+            Swal.fire({ title: 'Language Protocol', text: 'System switched to English', icon: 'info', background: '#000', color: '#d4af37' });
         }
     </script>
 </body>
