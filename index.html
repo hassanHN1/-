@@ -2,178 +2,101 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>إمبراطورية ليالي العرب | الإصدار النهائي</title>
+    <title>منظمة ليالي العرب | السينما المفتوحة</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
-        body { background: #010103; color: white; font-family: 'Cairo', sans-serif; scroll-behavior: smooth; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;900&display=swap');
+        body { background: #050505; color: white; font-family: 'Cairo', sans-serif; }
         .gold-text { color: #d4af37; }
-        .gold-bg { background-color: #d4af37; }
-        .movie-card { transition: 0.4s; cursor: pointer; border-radius: 12px; overflow: hidden; background: #0a0a0f; border: 1px solid #1a1a1a; position: relative; }
-        .movie-card:hover { transform: scale(1.05); border-color: #d4af37; box-shadow: 0 0 25px rgba(212,175,55,0.3); }
-        .movie-card img { width: 100%; height: 320px; object-fit: cover; }
-        
+        .movie-card { background: #111; border-radius: 10px; overflow: hidden; transition: 0.3s; cursor: pointer; border: 1px solid #222; }
+        .movie-card:hover { transform: scale(1.05); border-color: #d4af37; }
         #player-overlay { position: fixed; inset: 0; background: black; z-index: 9999; display: none; }
         iframe { width: 100%; height: 100%; border: none; }
-        
-        .loader-bar { height: 4px; background: #d4af37; width: 0%; transition: 0.5s; position: fixed; top: 0; left: 0; z-index: 10000; }
-        .search-bar { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 12px 25px; border-radius: 50px; outline: none; transition: 0.3s; width: 100%; max-width: 500px; text-align: center; }
-        .search-bar:focus { border-color: #d4af37; background: rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(212,175,55,0.2); }
-
-        /* أزرار السيرفرات */
-        .server-btn { background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 5px; font-size: 12px; transition: 0.3s; }
-        .server-btn:hover { background: #d4af37; color: black; }
     </style>
 </head>
 <body>
 
-    <div id="loader" class="loader-bar"></div>
-
     <div id="player-overlay">
-        <div class="absolute top-5 left-5 right-5 z-[10000] flex justify-between items-center">
-            <div class="flex gap-2" id="server-list">
-                </div>
-            <button onclick="closePlayer()" class="bg-red-600 text-white px-8 py-2 rounded-full font-black shadow-2xl hover:bg-red-700 transition">إغلاق المسرح ×</button>
-        </div>
+        <button onclick="closePlayer()" class="absolute top-5 left-5 bg-yellow-600 text-black px-6 py-2 rounded-full font-bold z-[10001]">إغلاق ×</button>
         <div id="videoContainer" class="w-full h-full"></div>
     </div>
 
-    <header class="p-6 flex justify-between items-center bg-black/90 backdrop-blur-lg sticky top-0 z-50 border-b border-white/5">
-        <div class="flex items-center gap-3">
-            <i class="fas fa-crown gold-text text-3xl animate-pulse"></i>
-            <h1 class="text-2xl font-black gold-text tracking-tighter">ليالي العرب</h1>
-        </div>
-        <div class="flex-1 flex justify-center px-4">
-            <input type="text" id="searchInput" class="search-bar" placeholder="ابحث عن فيلمك (عربي أو إنجليزي)...">
-        </div>
-        <div class="flex items-center gap-4">
-            <div class="hidden md:block text-left mr-4">
-                <p class="text-[10px] text-gray-500 uppercase">System Status</p>
-                <p class="text-[10px] text-green-500 font-bold">BYPASS ACTIVE</p>
-            </div>
-            <button onclick="requestMovie()" class="gold-bg text-black px-6 py-2 rounded-full font-black text-sm hover:scale-105 transition">طلب خاص</button>
+    <header class="p-6 bg-black border-b border-yellow-600/20 flex justify-between items-center sticky top-0 z-50">
+        <h1 class="text-2xl font-black gold-text">ليالي العرب <span class="text-white text-xs">V.FINAL</span></h1>
+        <div class="flex gap-2">
+            <input type="text" id="searchInput" placeholder="اكتب اسم الفيلم بالإنجليزية..." class="bg-zinc-900 border border-zinc-800 p-2 rounded-lg text-sm w-64 outline-none focus:border-yellow-600">
+            <button onclick="searchMovies()" class="bg-yellow-600 text-black px-4 py-2 rounded-lg font-bold text-sm">بحث</button>
         </div>
     </header>
 
-    <section class="relative h-[60vh] flex items-center px-12">
-        <div class="absolute inset-0 bg-gradient-to-r from-[#010103] via-[#010103]/80 to-transparent z-10"></div>
-        <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2000" class="absolute inset-0 w-full h-full object-cover">
-        <div class="relative z-20 max-w-3xl animate__animated animate__fadeIn">
-            <h2 class="text-7xl font-black mb-4 gold-text">ليالي العرب <span class="text-white text-4xl block mt-2">بوابتك للسينما العالمية</span></h2>
-            <p class="text-gray-400 text-xl mb-8 leading-relaxed">أقوى منصة لمشاهدة الأفلام والمسلسلات مجاناً. تجاوزنا كل القيود لنضع السينما بين يديك بجودة 4K.</p>
-            <div class="flex gap-4">
-                <button onclick="document.getElementById('main-content').scrollIntoView()" class="gold-bg text-black px-10 py-4 rounded-full font-black hover:shadow-[0_0_30px_#d4af37] transition">ابدأ المشاهدة الآن</button>
-            </div>
-        </div>
-    </section>
-
-    <main class="p-12" id="main-content">
-        <div class="flex justify-between items-center mb-12">
+    <main class="p-8">
+        <div class="mb-10 p-6 bg-yellow-600/10 border border-yellow-600/20 rounded-2xl flex justify-between items-center">
             <div>
-                <h3 class="text-3xl font-black pr-4 border-r-4 border-gold-bg">اكتشف المحتوى</h3>
-                <p class="text-gray-500 text-sm mt-1">يتم تحديث الأفلام تلقائياً كل ساعة</p>
+                <h2 class="text-xl font-bold">مرحباً بك في ديوان المنظمة</h2>
+                <p class="text-xs text-gray-400">إذا لم تظهر الأفلام، اضغط على زر "تنشيط الجلب"</p>
             </div>
-            <div class="flex gap-3">
-                <button onclick="fetchMovies('popular')" class="server-btn font-bold">الشائع</button>
-                <button onclick="fetchMovies('top_rated')" class="server-btn font-bold">الأعلى تقييماً</button>
-                <button onclick="fetchMovies('upcoming')" class="server-btn font-bold">قريباً</button>
-            </div>
+            <button onclick="fetchMovies()" class="bg-yellow-600 text-black px-6 py-2 rounded-full font-bold animate-bounce">تنشيط الجلب ⚡</button>
         </div>
 
-        <div id="movieGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-8">
+        <div id="movieGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
             </div>
     </main>
 
-    <footer class="p-10 text-center border-t border-white/5 text-gray-600 text-xs">
-        <p>© 2026 منظمة ليالي العرب - جميع الحقوق محفوظة للقائد</p>
-    </footer>
-
     <script>
+        // مفتاح احتياطي فعال جداً
         const API_KEY = '8d6d9194546435662aa063955619f697';
-        const grid = document.getElementById('movieGrid');
-        const loader = document.getElementById('loader');
-
-        // جلب الأفلام بنظام معالجة الأخطاء
-        async function fetchMovies(type = 'popular', query = '') {
-            loader.style.width = '30%';
-            let url = `https://api.themoviedb.org/3/movie/${type}?api_key=${API_KEY}&language=ar-SA&page=1`;
-            if(query) url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=ar-SA`;
-
+        
+        async function fetchMovies() {
+            const grid = document.getElementById('movieGrid');
+            grid.innerHTML = '<div class="col-span-full text-center py-10">جاري سحب الأفلام من الخزنة...</div>';
+            
             try {
-                const res = await fetch(url);
-                const data = await res.json();
-                if(data.results && data.results.length > 0) {
-                    renderMovies(data.results);
-                } else {
-                    grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500">لا توجد نتائج مطابقة لبحثك..</div>`;
-                }
-                loader.style.width = '100%';
-                setTimeout(() => loader.style.width = '0%', 500);
-            } catch (err) {
-                grid.innerHTML = `<div class="col-span-full text-center py-20">⚠️ فشل الاتصال، يرجى المحاولة لاحقاً.</div>`;
+                // جلب الأفلام الشائعة
+                const resp = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=ar-SA&page=1`);
+                const data = await resp.json();
+                render(data.results);
+            } catch (e) {
+                grid.innerHTML = '<div class="col-span-full text-center text-red-500">حدث خطأ في الشبكة. جرب استخدام VPN أو متصفح آخر.</div>';
             }
         }
 
-        function renderMovies(movies) {
+        async function searchMovies() {
+            const query = document.getElementById('searchInput').value;
+            if(!query) return;
+            const resp = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}&language=ar-SA`);
+            const data = await resp.json();
+            render(data.results);
+        }
+
+        function render(movies) {
+            const grid = document.getElementById('movieGrid');
             grid.innerHTML = '';
             movies.forEach(m => {
                 if(!m.poster_path) return;
-                const div = document.createElement('div');
-                div.className = 'movie-card animate__animated animate__zoomIn';
-                div.innerHTML = `
-                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" loading="lazy">
-                    <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-[10px] gold-text font-bold">★ ${m.vote_average.toFixed(1)}</div>
-                    <div class="p-4">
-                        <h4 class="font-bold text-sm truncate">${m.title}</h4>
-                        <p class="text-[10px] text-gray-500 mt-1">${m.release_date ? m.release_date.split('-')[0] : 'N/A'}</p>
+                const card = document.createElement('div');
+                card.className = 'movie-card';
+                card.innerHTML = `
+                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" class="w-full h-64 object-cover">
+                    <div class="p-3">
+                        <p class="text-xs font-bold truncate">${m.title}</p>
+                        <p class="text-[10px] text-yellow-600 mt-1">★ ${m.vote_average}</p>
                     </div>
                 `;
-                div.onclick = () => openPlayer(m.id, m.title);
-                grid.appendChild(div);
+                card.onclick = () => openPlayer(m.id);
+                grid.appendChild(card);
             });
         }
 
-        function openPlayer(id, title) {
+        function openPlayer(id) {
             const overlay = document.getElementById('player-overlay');
             const container = document.getElementById('videoContainer');
-            const serverList = document.getElementById('server-list');
+            // السيرفر الأكثر استقراراً في العالم حالياً
+            const url = `https://vidsrc.me/embed/movie?tmdb=${id}`;
             
-            // السيرفرات المتاحة عالمياً
-            const servers = [
-                { name: 'Server 1 (Fast)', url: `https://vidsrc.to/embed/movie/${id}` },
-                { name: 'Server 2 (Multi)', url: `https://vidsrc.me/embed/movie?tmdb=${id}` },
-                { name: 'Server 3 (Direct)', url: `https://embed.su/embed/movie/${id}` }
-            ];
-
             overlay.style.display = 'block';
-            serverList.innerHTML = ''; // مسح الأزرار القديمة
-
-            servers.forEach((s, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'server-btn font-bold text-white';
-                btn.innerText = s.name;
-                btn.onclick = () => {
-                    container.innerHTML = `<iframe src="${s.url}" allowfullscreen allow="autoplay"></iframe>`;
-                    Swal.fire({ toast: true, position: 'top', title: `تم التحويل إلى ${s.name}`, timer: 1500, showConfirmButton: false });
-                };
-                serverList.appendChild(btn);
-            });
-
-            // تشغيل السيرفر الأول تلقائياً
-            container.innerHTML = `<iframe src="${servers[0].url}" allowfullscreen allow="autoplay"></iframe>`;
-            
-            Swal.fire({
-                title: title,
-                text: 'جاري تجهيز أفضل جودة متاحة...',
-                icon: 'info',
-                background: '#0a0a0f',
-                color: '#d4af37',
-                timer: 2000,
-                showConfirmButton: false
-            });
+            container.innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
         }
 
         function closePlayer() {
@@ -181,24 +104,7 @@
             document.getElementById('videoContainer').innerHTML = '';
         }
 
-        function requestMovie() {
-            Swal.fire({
-                title: 'طلب فيلم للمنظمة',
-                input: 'text',
-                inputPlaceholder: 'اكتب اسم الفيلم هنا...',
-                background: '#0a0a0f', color: '#d4af37', confirmButtonColor: '#d4af37',
-                confirmButtonText: 'بحث وجلب'
-            }).then(result => {
-                if(result.value) fetchMovies('', result.value);
-            });
-        }
-
-        // البحث التلقائي
-        document.getElementById('searchInput').addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') fetchMovies('', e.target.value);
-        });
-
-        // تشغيل الجلب الأولي عند فتح الصفحة
+        // تشغيل تلقائي
         fetchMovies();
     </script>
 </body>
