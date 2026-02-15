@@ -2,108 +2,147 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>منظمة ليالي العرب | كاسر الحصار</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منظمة ليالي العرب | الكيان السينمائي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;900&display=swap');
-        body { background: #000; color: white; font-family: 'Cairo', sans-serif; }
-        .gold-border { border: 1px solid #d4af37; }
-        .btn-gold { background: #d4af37; color: #000; font-weight: 900; transition: 0.3s; }
-        .btn-gold:hover { background: #fff; transform: scale(1.05); }
-        iframe { width: 100%; height: 100%; border: none; background: #000; }
-        #player-overlay { position: fixed; inset: 0; background: black; z-index: 9999; display: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+        body { background: #020202; color: white; font-family: 'Cairo', sans-serif; overflow-x: hidden; }
+        .gold-glow { color: #d4af37; text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
+        .gold-bg { background: #d4af37; color: black; }
+        
+        /* تأثيرات الكروت */
+        .movie-card { 
+            position: relative; transition: 0.5s; cursor: pointer; border-radius: 15px; 
+            overflow: hidden; border: 1px solid #111;
+        }
+        .movie-card:hover { 
+            transform: scale(1.08) translateY(-10px); 
+            border-color: #d4af37; z-index: 50;
+            box-shadow: 0 10px 30px rgba(0,0,0,1);
+        }
+        .movie-card img { width: 100%; height: 350px; object-fit: cover; }
+        
+        /* مشغل الفيديو */
+        #theater { 
+            position: fixed; inset: 0; background: #000; z-index: 9999; 
+            display: none; flex-direction: column;
+        }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* شريط البحث الفخم */
+        .search-container {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 50px; padding: 10px 25px; transition: 0.3s;
+        }
+        .search-container:focus-within { border-color: #d4af37; box-shadow: 0 0 20px rgba(212,175,55,0.2); }
     </style>
 </head>
 <body>
 
-    <div id="player-overlay">
-        <div class="absolute top-4 right-4 z-[10000] flex gap-2">
-            <button onclick="closePlayer()" class="bg-red-600 px-6 py-2 rounded-full font-bold">إغلاق ×</button>
+    <div id="theater">
+        <div class="p-4 flex justify-between bg-black/80 backdrop-blur-md">
+            <h2 id="playing-title" class="gold-glow font-black">جاري العرض...</h2>
+            <button onclick="closeTheater()" class="bg-red-600 px-6 py-1 rounded-full text-white font-bold hover:bg-red-700">إغلاق X</button>
         </div>
-        <div id="videoContainer" class="w-full h-full"></div>
+        <div id="player-box" class="flex-1"></div>
     </div>
 
-    <header class="p-6 text-center border-b border-zinc-800 bg-zinc-900/50">
-        <h1 class="text-3xl font-black text-[#d4af37] mb-2 uppercase">Layali Al Arab Cinema</h1>
-        <p class="text-xs text-gray-500">نظام التشغيل المباشر - نسخة تجاوز الحجب</p>
-    </header>
-
-    <main class="p-6 max-w-4xl mx-auto">
-        <div class="bg-zinc-900 p-8 rounded-3xl gold-border mb-10 text-center animate__animated animate__fadeIn">
-            <i class="fas fa-bolt text-4xl text-[#d4af37] mb-4"></i>
-            <h2 class="text-xl font-bold mb-6">تشغيل أي فيلم فوراً</h2>
-            <div class="flex flex-col gap-4">
-                <input type="text" id="manualSearch" placeholder="اكتب اسم الفيلم بالإنجليزية (مثلاً: John Wick)" 
-                       class="bg-black border border-zinc-700 p-4 rounded-xl text-center outline-none focus:border-[#d4af37]">
-                <button onclick="quickPlay()" class="btn-gold p-4 rounded-xl">تشغيل السيرفر العالمي 1 ⚡</button>
-                <button onclick="quickPlayAlt()" class="bg-white text-black font-black p-4 rounded-xl">تشغيل السيرفر العالمي 2 🎬</button>
-            </div>
-            <p class="text-[10px] text-gray-500 mt-4 uppercase">ملاحظة: إذا لم يظهر شيء، اكتب اسم الفيلم واضغط تشغيل</p>
+    <header class="p-8 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="text-center md:text-right">
+            <h1 class="text-4xl font-black gold-glow mb-1 italic">LAYALI AL ARAB</h1>
+            <p class="text-xs tracking-[5px] text-gray-500">THE PRIVATE CINEMA</p>
         </div>
 
-        <h3 class="text-lg font-bold mb-6 border-r-4 border-[#d4af37] pr-3">أفلام جاهزة للمشاهدة</h3>
-        <div id="defaultMovies" class="grid grid-cols-2 md:grid-cols-3 gap-4">
-            </div>
+        <div class="search-container flex items-center gap-4 w-full max-w-xl">
+            <i class="fas fa-search text-gray-500"></i>
+            <input type="text" id="searchInput" placeholder="ابحث عن أي فيلم (بالإنجليزي)..." class="bg-transparent outline-none w-full text-sm">
+            <button onclick="search()" class="gold-bg px-6 py-2 rounded-full font-black text-xs">جلب</button>
+        </div>
+    </header>
+
+    <main class="p-8">
+        <div class="flex items-center gap-4 mb-10">
+            <div class="h-1 w-12 gold-bg"></div>
+            <h2 class="text-2xl font-black uppercase tracking-tighter">آخر السحبات العالمية</h2>
+        </div>
+
+        <div id="grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-8">
+            <div class="animate-pulse bg-zinc-900 h-80 rounded-2xl"></div>
+            <div class="animate-pulse bg-zinc-900 h-80 rounded-2xl"></div>
+            <div class="animate-pulse bg-zinc-900 h-80 rounded-2xl"></div>
+            <div class="animate-pulse bg-zinc-900 h-80 rounded-2xl"></div>
+        </div>
     </main>
 
     <script>
-        // قائمة أفلام "الطوارئ" - تعمل بدون API
-        const emergencyMovies = [
-            { id: 157336, title: "Interstellar", img: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6vS6o6oPEgx6A.jpg" },
-            { id: 27205, title: "Inception", img: "https://image.tmdb.org/t/p/w500/edv5CZvRjS99vS6YkdIStandard.jpg" },
-            { id: 299536, title: "Avengers: Infinity War", img: "https://image.tmdb.org/t/p/w500/7WsyChvRStvS0kmOR0pL3tkyvS9.jpg" },
-            { id: 155, title: "The Dark Knight", img: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDp9QmSbmvQY2sqAbUc.jpg" }
-        ];
+        const API_KEY = '8d6d9194546435662aa063955619f697';
+        const grid = document.getElementById('grid');
 
-        function loadEmergency() {
-            const grid = document.getElementById('defaultMovies');
-            emergencyMovies.forEach(m => {
-                const div = document.createElement('div');
-                div.className = "bg-zinc-900 rounded-xl overflow-hidden cursor-pointer gold-border hover:scale-105 transition";
-                div.innerHTML = `
-                    <img src="${m.img}" class="w-full h-48 object-cover opacity-80">
-                    <div class="p-3 text-center text-xs font-bold">${m.title}</div>
+        // دالة الجلب الأساسية
+        async function loadMovies(query = '') {
+            let url = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=ar-SA&page=1`;
+            if (query) url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}&language=ar-SA`;
+
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                display(data.results);
+            } catch (err) {
+                grid.innerHTML = `<div class="col-span-full text-center py-20 text-red-500 font-bold">عذراً قائد، السيرفر العالمي مشغول، حاول تبحث عن فيلم محدد.</div>`;
+            }
+        }
+
+        function display(movies) {
+            grid.innerHTML = '';
+            movies.forEach(m => {
+                if (!m.poster_path) return;
+                const card = document.createElement('div');
+                card.className = 'movie-card animate__animated animate__fadeInUp';
+                card.innerHTML = `
+                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80"></div>
+                    <div class="absolute bottom-0 p-4 w-full">
+                        <p class="text-xs font-bold truncate">${m.title}</p>
+                        <p class="text-[10px] text-yellow-500 mt-1 italic">Rating: ${m.vote_average}</p>
+                    </div>
                 `;
-                div.onclick = () => openPlayer(m.id);
-                grid.appendChild(div);
+                card.onclick = () => play(m.id, m.title);
+                grid.appendChild(card);
             });
         }
 
-        function quickPlay() {
-            const name = document.getElementById('manualSearch').value;
-            if(!name) {
-                Swal.fire('تنبيه', 'اكتب اسم الفيلم أولاً يا قائد', 'warning');
-                return;
-            }
-            // تشغيل عبر البحث بالاسم مباشرة في السيرفر
-            const url = `https://vidsrc.to/embed/movie/${name.toLowerCase().replace(/ /g, '-')}`;
-            document.getElementById('player-overlay').style.display = 'block';
-            document.getElementById('videoContainer').innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
+        function play(id, title) {
+            const theater = document.getElementById('theater');
+            const box = document.getElementById('player-box');
+            document.getElementById('playing-title').innerText = `يعرض الآن: ${title}`;
+            
+            // نستخدم السيرفر الأكثر استقراراً لليالي العرب
+            const streamUrl = `https://vidsrc.to/embed/movie/${id}`; 
+            
+            theater.style.display = 'flex';
+            box.innerHTML = `<iframe src="${streamUrl}" allowfullscreen></iframe>`;
         }
 
-        function quickPlayAlt() {
-            const name = document.getElementById('manualSearch').value;
-            if(!name) return;
-            // سيرفر بديل
-            const url = `https://vidsrc.me/embed/movie?title=${encodeURIComponent(name)}`;
-            document.getElementById('player-overlay').style.display = 'block';
-            document.getElementById('videoContainer').innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
+        function closeTheater() {
+            document.getElementById('theater').style.display = 'none';
+            document.getElementById('player-box').innerHTML = '';
         }
 
-        function openPlayer(id) {
-            document.getElementById('player-overlay').style.display = 'block';
-            document.getElementById('videoContainer').innerHTML = `<iframe src="https://vidsrc.me/embed/movie?tmdb=${id}" allowfullscreen></iframe>`;
+        function search() {
+            const val = document.getElementById('searchInput').value;
+            if(val) loadMovies(val);
         }
 
-        function closePlayer() {
-            document.getElementById('player-overlay').style.display = 'none';
-            document.getElementById('videoContainer').innerHTML = '';
-        }
+        // تشغيل تلقائي عند الفتح
+        loadMovies();
 
-        // تشغيل أفلام الطوارئ فوراً
-        loadEmergency();
+        // بحث عند الضغط على Enter
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') search();
+        });
     </script>
 </body>
 </html>
