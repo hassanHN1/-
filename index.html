@@ -1,544 +1,805 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html id="htmlTag" lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة ليالي العرب | الإصدار الرسمي</title>
+    <title>ليالي العرب V5 | Layali Al-Arab Pro</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700;900&family=Poppins:wght@300;600;900&display=swap" rel="stylesheet">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap');
-        
         :root {
-            --gold-primary: #d4af37;
-            --gold-shine: #fff8dc;
-            --royal-blue: #0f172a;
-            --deep-purple: #1e1b4b;
+            --gold: #d4af37;
+            --gold-light: #fde68a;
+            --deep-blue: #020617;
+            --accent: #1e1b4b;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body { 
-            background-color: #020617;
-            background-image: 
-                radial-gradient(circle at 50% 0%, #1e1b4b 0%, #020617 60%),
-                url("https://www.transparenttextures.com/patterns/stardust.png");
+            background: var(--deep-blue);
             color: white; 
-            font-family: 'Tajawal', sans-serif; 
+            font-family: 'Tajawal', sans-serif;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(30, 27, 75, 0.8) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+            min-height: 100vh;
             overflow-x: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* تأثيرات الزجاج والحدود الذهبية */
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        /* تأثيرات الزجاج */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
         }
 
-        .gold-border { border: 1px solid var(--gold-primary); }
-        .gold-text { 
-            background: linear-gradient(to bottom, #ffd700, #b8860b); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
         }
 
-        /* زر جوجل */
-        .google-btn {
-            background: white; color: #333;
-            transition: 0.3s; position: relative; overflow: hidden;
+        /* النصوص الذهبية */
+        .gold-text {
+            background: linear-gradient(135deg, #d4af37 0%, #fde68a 50%, #b45309 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
         }
-        .google-btn:hover { background: #f1f1f1; transform: translateY(-2px); }
 
-        /* شريط الأخبار */
-        .ticker-wrap {
-            position: fixed; bottom: 0; width: 100%; overflow: hidden; height: 30px;
-            background: rgba(0,0,0,0.9); border-top: 1px solid #333; z-index: 50;
-            line-height: 30px;
+        /* الأزرار */
+        .btn-gold {
+            background: linear-gradient(45deg, #b45309, #d4af37, #b45309);
+            background-size: 200% auto;
+            color: white;
+            transition: 0.5s;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
         }
-        .ticker { display: inline-block; white-space: nowrap; animation: ticker 20s linear infinite; }
-        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        .btn-gold:hover {
+            background-position: right center;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+        }
 
         /* الأنيميشن */
-        .float { animation: float 6s ease-in-out infinite; }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-20px); } 100% { transform: translateY(0px); } }
+        .lantern {
+            position: fixed; top: -20px; z-index: 5; opacity: 0.3;
+            animation: swing 4s ease-in-out infinite alternate;
+            transform-origin: top center;
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
+        }
+
+        @keyframes swing { 
+            from { transform: rotate(8deg); } 
+            to { transform: rotate(-8deg); } 
+        }
+
+        /* شريط التمرير */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+
+        /* اللغات */
+        .lang-en { font-family: 'Poppins', sans-serif; direction: ltr; }
+        .lang-ar { font-family: 'Tajawal', sans-serif; direction: rtl; }
+        
+        .hidden { display: none !important; }
+
+        /* فقاعات الدردشة */
+        .msg-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            position: relative;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .avatar-glow {
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .level-badge {
+            font-size: 0.6rem;
+            background: gold;
+            color: black;
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-weight: bold;
+            vertical-align: middle;
+        }
     </style>
 </head>
-<body class="antialiased selection:bg-yellow-500 selection:text-black">
+<body class="lang-ar">
 
-    <div class="fixed inset-0 pointer-events-none z-0">
-        <div class="absolute top-0 left-10 text-yellow-500/20 text-9xl float" style="animation-delay: 1s;"><i class="fas fa-moon"></i></div>
-        <div class="absolute top-20 right-20 text-yellow-500/10 text-8xl float" style="animation-delay: 2s;"><i class="fas fa-mosque"></i></div>
+    <div class="lantern left-10 text-yellow-500 text-7xl"><i class="fas fa-fan"></i></div>
+    <div class="lantern right-10 text-yellow-500 text-7xl" style="animation-delay: 1.5s;"><i class="fas fa-fan"></i></div>
+    
+    <div id="stars"></div>
+
+    <div class="fixed top-6 left-6 z-[100] flex gap-2">
+        <button onclick="toggleLanguage()" class="glass p-3 rounded-2xl hover:bg-white/10 transition group">
+            <i class="fas fa-globe text-yellow-500 group-hover:rotate-180 transition-transform duration-500"></i>
+            <span id="langBtnText" class="text-xs font-bold ml-1">English</span>
+        </button>
+        <button id="musicToggle" onclick="toggleMusic()" class="glass p-3 rounded-2xl hover:bg-white/10 transition">
+            <i class="fas fa-music text-gray-400"></i>
+        </button>
     </div>
 
-    <div id="authScreen" class="min-h-screen flex flex-col items-center justify-center p-4 relative z-10">
-        <div class="glass-panel p-8 rounded-[2.5rem] w-full max-w-md text-center border-t-4 border-yellow-500 animate__animated animate__fadeInDown">
-            
-            <div class="w-24 h-24 bg-yellow-500/10 rounded-full mx-auto flex items-center justify-center mb-4 border border-yellow-500/50 shadow-[0_0_30px_rgba(255,215,0,0.2)]">
-                <i class="fas fa-kaaba text-4xl text-yellow-400"></i>
+    <section id="authScreen" class="min-h-screen flex items-center justify-center p-4 relative z-10">
+        <div class="glass p-10 rounded-[3rem] w-full max-w-lg border-t-8 border-yellow-600 animate__animated animate__fadeIn">
+            <div class="text-center mb-10">
+                <div class="text-7xl mb-4 animate__animated animate__zoomIn">🌙</div>
+                <h1 class="text-5xl font-black gold-text mb-2" data-key="title">ليالي العرب</h1>
+                <p class="text-gray-400 tracking-widest text-sm" data-key="subtitle">خيمتنا تجمعنا في رمضان</p>
             </div>
 
-            <h1 class="text-4xl font-black mb-2 gold-text">ليالي العرب</h1>
-            <p class="text-gray-400 text-sm mb-8">منصة التراث والاجتماع العربي الأول</p>
-
-            <div class="space-y-4">
-                <button onclick="simulateGoogleLogin()" class="google-btn w-full py-3 rounded-xl font-bold flex items-center justify-center gap-3 shadow-lg">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" class="w-5 h-5">
-                    <span>تسجيل الدخول عبر Google</span>
-                </button>
-
-                <div class="flex items-center gap-2 text-xs text-gray-500 my-4">
-                    <span class="h-px bg-gray-700 flex-1"></span>
-                    <span>أو الدخول كزائر</span>
-                    <span class="h-px bg-gray-700 flex-1"></span>
+            <div class="space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="mockGoogleLogin()" class="bg-white/5 hover:bg-white/10 p-4 rounded-2xl border border-white/10 flex flex-col items-center gap-2 transition">
+                        <img src="https://www.google.com/favicon.ico" class="w-6">
+                        <span class="text-[10px] uppercase font-bold text-gray-300">Google</span>
+                    </button>
+                    <button onclick="mockGuestLogin()" class="bg-white/5 hover:bg-white/10 p-4 rounded-2xl border border-white/10 flex flex-col items-center gap-2 transition">
+                        <i class="fas fa-user-secret text-xl text-yellow-500"></i>
+                        <span class="text-[10px] uppercase font-bold text-gray-300" data-key="guest">زائر</span>
+                    </button>
                 </div>
 
-                <input type="text" id="guestName" placeholder="اكتب اسمك المستعار..." class="w-full bg-black/50 border border-gray-700 rounded-xl p-3 text-center text-white focus:border-yellow-500 focus:outline-none transition">
-                
-                <button onclick="guestLogin()" class="w-full bg-gradient-to-r from-yellow-600 to-yellow-800 hover:from-yellow-500 hover:to-yellow-700 text-white font-bold py-3 rounded-xl shadow-lg transition transform hover:scale-[1.02]">
-                    <i class="fas fa-door-open ml-2"></i> دخول الخيمة
-                </button>
-            </div>
-            
-            <p class="mt-6 text-[10px] text-gray-500">
-                <i class="fas fa-shield-alt text-green-500"></i> اتصال آمن ومشفر | الإصدار V3.0
-            </p>
-        </div>
-    </div>
+                <div class="relative flex py-3 items-center">
+                    <div class="flex-grow border-t border-white/10"></div>
+                    <span class="flex-shrink mx-4 text-gray-500 text-xs" data-key="or">أو عبر الهوية</span>
+                    <div class="flex-grow border-t border-white/10"></div>
+                </div>
 
-    <div id="mainApp" class="hidden min-h-screen pb-12 relative z-10">
-        
-        <nav class="glass-panel sticky top-0 z-50 px-6 py-4 flex justify-between items-center rounded-b-3xl mx-2 mt-2">
+                <div id="regBox" class="space-y-4">
+                    <div class="flex flex-col items-center mb-4">
+                        <label for="pfpInput" class="cursor-pointer group relative">
+                            <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-yellow-500 p-1">
+                                <img id="pfpPreview" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-full h-full object-cover rounded-full">
+                            </div>
+                            <div class="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                <i class="fas fa-camera text-white"></i>
+                            </div>
+                        </label>
+                        <input type="file" id="pfpInput" accept="image/*" class="hidden" onchange="handlePfp(this)">
+                        <p class="text-[10px] text-gray-500 mt-2" data-key="uploadHint">اضغط لتغيير الصورة</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="relative">
+                            <i class="fas fa-user absolute top-4 left-4 text-gray-500"></i>
+                            <input type="text" id="regUser" data-placeholder="username" class="w-full bg-black/40 border border-white/10 p-4 pl-12 rounded-2xl outline-none focus:border-yellow-500 transition">
+                        </div>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute top-4 left-4 text-gray-500"></i>
+                            <input type="password" id="regPass" data-placeholder="password" class="w-full bg-black/40 border border-white/10 p-4 pl-12 rounded-2xl outline-none focus:border-yellow-500 transition">
+                        </div>
+                    </div>
+
+                    <button onclick="register()" class="btn-gold w-full py-4 rounded-2xl font-black text-lg shadow-2xl" data-key="signupBtn">إنشاء الهوية</button>
+                    <p class="text-center text-sm text-gray-500">
+                        <span data-key="haveAccount">لديك حساب بالفعل؟</span> 
+                        <button onclick="switchAuth(true)" class="text-yellow-500 font-bold hover:underline" data-key="login">دخول</button>
+                    </p>
+                </div>
+
+                <div id="loginBox" class="hidden space-y-4 animate__animated animate__fadeIn">
+                    <input type="text" id="logUser" data-placeholder="username" class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl outline-none focus:border-yellow-500">
+                    <input type="password" id="logPass" data-placeholder="password" class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl outline-none focus:border-yellow-500">
+                    <button onclick="login()" class="btn-gold w-full py-4 rounded-2xl font-black shadow-2xl" data-key="loginBtn">تسجيل الدخول</button>
+                    <button onclick="switchAuth(false)" class="w-full text-center text-sm text-gray-400" data-key="signup">العودة للتسجيل</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="mainApp" class="hidden min-h-screen pb-20">
+        <nav class="glass sticky top-0 z-50 px-6 py-4 flex justify-between items-center border-b border-yellow-500/20">
             <div class="flex items-center gap-4">
-                <div class="relative cursor-pointer group" onclick="editProfile()">
-                    <img id="navAvatar" src="" class="w-12 h-12 rounded-full border-2 border-yellow-500 object-cover">
-                    <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-black"></div>
-                    <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-[10px]">تعديل</div>
+                <div class="relative">
+                    <img id="navPfp" src="" class="w-12 h-12 rounded-full border-2 border-yellow-500 avatar-glow">
+                    <div class="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-black"></div>
                 </div>
                 <div>
-                    <h3 id="navName" class="font-bold text-lg text-white leading-tight">--</h3>
-                    <div class="text-xs text-yellow-500 font-mono bg-yellow-500/10 px-2 rounded-lg inline-block mt-1">
-                        <i class="fas fa-coins text-[10px]"></i> <span id="navGold">0</span>
+                    <div class="flex items-center gap-2">
+                        <h4 id="navName" class="font-black text-lg">--</h4>
+                        <span id="userLevel" class="level-badge">LVL 1</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-[10px] text-yellow-500 font-bold"><i class="fas fa-coins"></i> <span id="navGold">0</span></span>
+                        <div class="w-20 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                            <div id="xpBar" class="h-full bg-yellow-500 w-1/3"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="flex gap-3">
-                <button onclick="logout()" class="w-10 h-10 rounded-full bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition flex items-center justify-center">
-                    <i class="fas fa-power-off"></i>
+
+            <div class="flex items-center gap-3">
+                <button onclick="showCreateRoom()" class="btn-gold px-6 py-2.5 rounded-xl text-xs font-black flex items-center gap-2">
+                    <i class="fas fa-plus-circle"></i> <span data-key="newRoom">خيمة جديدة</span>
                 </button>
+                <button onclick="toggleSettings()" class="glass p-2.5 rounded-xl text-gray-400"><i class="fas fa-cog"></i></button>
+                <button onclick="logout()" class="bg-red-500/10 text-red-500 p-2.5 rounded-xl border border-red-500/20"><i class="fas fa-power-off"></i></button>
             </div>
         </nav>
 
-        <div class="container mx-auto px-4 mt-8">
+        <main class="p-6 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                
-                <div class="lg:col-span-1 space-y-6">
-                    <div class="glass-panel p-6 rounded-3xl text-center relative overflow-hidden">
-                        <div class="absolute top-0 right-0 bg-yellow-500 text-black text-[10px] font-bold px-3 py-1 rounded-bl-xl">جديد</div>
-                        <h2 class="text-xl font-bold mb-2">🌙 مرحباً يا <span id="welcomeName" class="text-yellow-400"></span></h2>
-                        <p class="text-xs text-gray-400 mb-4">تم افتتاح المنصة رسمياً بتاريخ اليوم!</p>
-                        <div class="bg-white/5 rounded-xl p-3 border border-white/10">
-                            <div class="text-2xl font-black text-white" id="onlineCount">1,240</div>
-                            <div class="text-[10px] text-gray-400">عضو نشط الآن</div>
+            <div class="lg:col-span-3 space-y-6">
+                <div class="glass p-6 rounded-[2rem] border-l-4 border-yellow-500 animate__animated animate__fadeInLeft">
+                    <h3 class="text-gray-500 text-[10px] font-bold uppercase mb-4" data-key="status">الحالة العامة</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm" data-key="onlineNow">المتواجدون</span>
+                            <span id="liveCounter" class="bg-green-500/20 text-green-500 px-3 py-1 rounded-lg font-bold text-xs">--</span>
                         </div>
-                    </div>
-
-                    <div class="glass-panel p-5 rounded-3xl border border-yellow-500/30">
-                        <h3 class="font-bold text-yellow-500 flex items-center gap-2 mb-4">
-                            <i class="fas fa-crown text-xl animate-pulse"></i> كبار الداعمين
-                        </h3>
-                        <div id="supportersList" class="space-y-3">
-                            </div>
-                        <button onclick="becomeSupporter()" class="w-full mt-4 bg-yellow-600/20 hover:bg-yellow-600/40 text-yellow-400 text-xs py-2 rounded-xl transition border border-yellow-500/30">
-                            كن داعماً الآن
-                        </button>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm" data-key="totalRooms">الخيام المفتوحة</span>
+                            <span id="roomCounter" class="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded-lg font-bold text-xs">0</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="lg:col-span-3">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <i class="fas fa-tent text-emerald-500"></i> الخيم النشطة
-                        </h2>
-                        <button onclick="createRoomPrompt()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/20 transition flex items-center gap-2">
-                            <i class="fas fa-plus"></i> إنشاء خيمة
-                        </button>
+                <div class="glass p-6 rounded-[2rem] animate__animated animate__fadeInLeft" style="animation-delay: 0.2s">
+                    <h3 class="font-black text-yellow-500 mb-6 flex items-center gap-2">
+                        <i class="fas fa-fire animate-pulse"></i> <span data-key="trending">الأكثر تفاعلاً</span>
+                    </h3>
+                    <div id="trendingList" class="space-y-4">
+                        </div>
+                </div>
+
+                <div class="glass p-4 rounded-2xl text-center">
+                    <p class="text-[10px] text-gray-500" data-key="ads">مساحة إعلانية / فعاليات</p>
+                    <div class="mt-2 h-20 bg-gradient-to-r from-yellow-900/20 to-transparent rounded-xl flex items-center justify-center border border-dashed border-white/10">
+                        <span class="text-xs italic">مسابقة أجمل فانوس 🏮</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-6 space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-3xl font-black" data-key="explore">مجالس الطيبين ⛺</h2>
+                    <div class="flex gap-2">
+                        <button class="bg-white/5 p-2 rounded-lg text-xs hover:bg-yellow-500 transition" onclick="renderRooms('all')">الكل</button>
+                        <button class="bg-white/5 p-2 rounded-lg text-xs" onclick="renderRooms('public')">عامة</button>
+                        <button class="bg-white/5 p-2 rounded-lg text-xs" onclick="renderRooms('private')">خاصة</button>
+                    </div>
+                </div>
+
+                <div id="roomsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     </div>
 
-                    <div id="roomsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div id="emptyRooms" class="hidden flex flex-col items-center justify-center py-20 opacity-20">
+                    <i class="fas fa-moon text-8xl mb-4"></i>
+                    <p class="text-2xl font-bold" data-key="noRooms">لا يوجد مجالس مفتوحة حالياً</p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-3 space-y-6">
+                <div class="glass p-6 rounded-[2rem] h-fit">
+                    <h3 class="font-black mb-4 flex items-center gap-2">
+                        <i class="fas fa-users text-blue-400"></i> <span data-key="globalChat">النشطين</span>
+                    </h3>
+                    <div id="activeUsersList" class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
                         </div>
                 </div>
             </div>
-        </div>
+
+        </main>
     </div>
 
-    <div id="roomInterface" class="hidden fixed inset-0 z-50 bg-[#020617] flex flex-col animate__animated animate__zoomIn">
-        <header class="h-16 border-b border-white/10 bg-black/40 flex justify-between items-center px-4">
-            <div class="flex items-center gap-3">
-                <button onclick="leaveRoom()" class="text-gray-400 hover:text-white"><i class="fas fa-arrow-right"></i></button>
-                <div>
-                    <h3 id="currentRoomTitle" class="font-bold text-white">---</h3>
-                    <span class="text-[10px] text-green-400 flex items-center gap-1"><span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> متصل</span>
+    <div id="chatView" class="hidden fixed inset-0 z-[60] bg-[#010409] flex flex-col animate__animated animate__slideInUp">
+        <header class="p-4 border-b border-white/10 glass flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <button onclick="leaveRoom()" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10">
+                    <i class="fas fa-arrow-right text-yellow-500"></i>
+                </button>
+                <div class="flex items-center gap-3">
+                    <div id="roomIcon" class="w-10 h-10 rounded-xl bg-yellow-500/20 flex items-center justify-center text-yellow-500">
+                        <i class="fas fa-mosque"></i>
+                    </div>
+                    <div>
+                        <h3 id="roomTitle" class="font-black text-lg">--</h3>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-green-500 rounded-full animate-ping"></span>
+                            <p class="text-[10px] text-green-500 font-bold" data-key="inRoom">بث مباشر الآن</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+            
             <div class="flex items-center gap-2">
-                <button onclick="donateInRoom()" class="bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold hover:bg-yellow-400 transition animate-bounce">
-                    <i class="fas fa-gift"></i> دعم
-                </button>
-                <div class="bg-white/10 px-3 py-1 rounded-lg text-xs font-mono" id="roomCodeDisplay">CODE</div>
+                <button onclick="showRoomInfo()" class="glass p-2 rounded-lg text-gray-400"><i class="fas fa-info-circle"></i></button>
+                <div id="roomCodeDisplay" class="hidden md:block bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-[10px] font-mono text-yellow-500 tracking-widest">
+                    ID: --
+                </div>
             </div>
         </header>
-
-        <div class="flex-1 flex overflow-hidden">
-            <div class="flex-1 flex flex-col bg-image-pattern">
-                <div id="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-4">
-                    </div>
-                
-                <div class="p-4 bg-black/60 backdrop-blur border-t border-white/10">
-                    <div class="flex gap-2 relative">
-                        <button onclick="sendLike()" class="text-red-500 hover:scale-125 transition"><i class="fas fa-heart"></i></button>
-                        <input type="text" id="msgInput" placeholder="شاركنا الحديث..." class="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm text-white focus:border-yellow-500 outline-none">
-                        <button onclick="sendMessage()" class="w-10 h-10 bg-yellow-600 rounded-full text-white shadow-lg hover:bg-yellow-500 transition"><i class="fas fa-paper-plane text-xs"></i></button>
-                    </div>
-                </div>
+        
+        <div id="msgContainer" class="flex-1 overflow-y-auto p-6 space-y-6 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')]">
+            <div class="flex justify-center">
+                <span class="bg-yellow-500/10 text-yellow-500 text-[10px] px-4 py-1 rounded-full border border-yellow-500/20" data-key="chatSecure">تشفير الطرفين مفعل - أهلاً بك في الخيمة</span>
             </div>
         </div>
-    </div>
 
-    <div class="ticker-wrap">
-        <div class="ticker text-xs text-yellow-500">
-            🌙 تم افتتاح منصة "ليالي العرب" رسمياً اليوم! | 📢 الإدارة: نرحب بجميع الأعضاء الجدد | 🏆 مسابقة "أجمل فانوس" تبدأ قريباً | 💎 يمكنك الآن دعم أصدقائك بالذهب داخل الغرف
+        <div id="giftPanel" class="hidden p-4 glass-dark border-t border-yellow-500/20 flex gap-4 overflow-x-auto">
+            <button onclick="sendGift('🌹', 10)" class="flex flex-col items-center min-w-[60px] bg-white/5 p-2 rounded-xl border border-white/10">
+                <span class="text-2xl">🌹</span><span class="text-[8px] mt-1">10 Gold</span>
+            </button>
+            <button onclick="sendGift('☕', 20)" class="flex flex-col items-center min-w-[60px] bg-white/5 p-2 rounded-xl border border-white/10">
+                <span class="text-2xl">☕</span><span class="text-[8px] mt-1">20 Gold</span>
+            </button>
+            <button onclick="sendGift('🏮', 50)" class="flex flex-col items-center min-w-[60px] bg-white/5 p-2 rounded-xl border border-white/10">
+                <span class="text-2xl">🏮</span><span class="text-[8px] mt-1">50 Gold</span>
+            </button>
+            <button onclick="sendGift('👑', 500)" class="flex flex-col items-center min-w-[60px] bg-white/5 p-2 rounded-xl border border-white/10">
+                <span class="text-2xl">👑</span><span class="text-[8px] mt-1">500 Gold</span>
+            </button>
+        </div>
+
+        <div class="p-4 glass border-t border-white/10">
+            <div class="max-w-4xl mx-auto flex gap-3 items-end">
+                <div class="flex-1 bg-white/5 border border-white/10 rounded-[2rem] flex items-center px-4 py-1 focus-within:border-yellow-500 transition-all">
+                    <button onclick="toggleGiftPanel()" class="text-yellow-500 p-2 hover:scale-110 transition"><i class="fas fa-gift text-xl"></i></button>
+                    <textarea id="msgInput" rows="1" data-placeholder="messageHint" class="flex-1 bg-transparent border-none outline-none py-3 px-2 text-sm resize-none" oninput="autoResize(this)"></textarea>
+                    <button onclick="toggleEmoji()" class="text-gray-400 p-2 hover:text-yellow-500"><i class="far fa-smile text-xl"></i></button>
+                </div>
+                <button onclick="sendMsg()" class="btn-gold w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform active:scale-90">
+                    <i class="fas fa-paper-plane text-xl"></i>
+                </button>
+            </div>
         </div>
     </div>
 
     <script>
-        // --- 1. قاعدة البيانات المحلية (محاكاة السيرفر) ---
-        const DB_KEY = 'LayaliApp_V3_Data';
-        
-        // بيانات افتراضية
-        const defaultData = {
-            user: null, // {name, avatar, gold, type: 'guest'|'google'}
-            supporters: [
-                { name: "الشيخ فهد", gold: 15000, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=fahad" },
-                { name: "الأميرة سارة", gold: 8500, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sara" },
-                { name: "أبو العز", gold: 5000, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=abuelzz" }
-            ],
-            rooms: [
-                { id: 'RM01', name: 'مجلس السوالف', host: 'النظام', users: 15 },
-                { id: 'RM02', name: 'مسابقات رمضانية', host: 'الإدارة', users: 42 },
-                { id: 'RM03', name: 'تلاوات خاشعة', host: 'القارئ', users: 8 }
-            ]
+        // --- 1. قاعدة البيانات واللغات ---
+        const i18n = {
+            ar: {
+                title: "ليالي العرب", subtitle: "مجلس الكرم والدردشة الرمضانية", googleBtn: "دخول جوجل",
+                guest: "دخول زوار", or: "أو استخدم هويتك", username: "اسم المستخدم", password: "كلمة المرور",
+                signupBtn: "تجهيز المجلس (تسجيل)", haveAccount: "لديك عضوية؟", login: "دخول",
+                loginBtn: "دخول الخيمة", signup: "إنشاء حساب جديد", uploadHint: "ارفع صورتك الشخصية",
+                newRoom: "خيمة جديدة", explore: "مجالس الطيبين ⛺", onlineNow: "متواجد حالياً",
+                totalRooms: "خيام مفتوحة", trending: "الأكثر تفاعلاً", status: "نظام المراقبة",
+                noRooms: "كل الخيام مغلقة الآن.. افتح واحدة!", inRoom: "بث مباشر الآن",
+                messageHint: "اكتب رسالتك.. شاركنا الحكايا", chatSecure: "تشفير الطرفين مفعل - أهلاً بك",
+                ads: "إعلانات وفعاليات", globalChat: "النشطين عالمياً", roomName: "عنوان المجلس",
+                roomPass: "رمز الدخول (اختياري)", create: "افتح الخيمة", 
+                giftSent: "أرسل هدية قيمة!", lowGold: "ذهبك لا يكفي يا صديقي"
+            },
+            en: {
+                title: "Layali Al-Arab", subtitle: "The Gathering of Generosity & Chat", googleBtn: "Google Sign-in",
+                guest: "Guest Access", or: "OR USE IDENTITY", username: "Username", password: "Password",
+                signupBtn: "Prepare Tent (Register)", haveAccount: "Already a member?", login: "Sign In",
+                loginBtn: "Enter Tent", signup: "Back to Register", uploadHint: "Upload profile picture",
+                newRoom: "New Tent", explore: "Explore Tents ⛺", onlineNow: "Currently Online",
+                totalRooms: "Active Tents", trending: "Most Trending", status: "System Monitor",
+                noRooms: "All tents are closed.. Open one!", inRoom: "Live Streaming Now",
+                messageHint: "Type a message.. Share stories", chatSecure: "End-to-end encryption enabled",
+                ads: "Events & Ads", globalChat: "Active Users", roomName: "Tent Name",
+                roomPass: "Access Code (Optional)", create: "Open Tent",
+                giftSent: "Sent a precious gift!", lowGold: "Not enough gold, friend"
+            }
         };
 
-        let appData = JSON.parse(localStorage.getItem(DB_KEY)) || defaultData;
+        // --- 2. الحالة العامة (State) ---
+        let state = {
+            lang: localStorage.getItem('layali_lang') || 'ar',
+            currentUser: JSON.parse(localStorage.getItem('layali_user')) || null,
+            users: JSON.parse(localStorage.getItem('layali_db')) || [],
+            rooms: JSON.parse(localStorage.getItem('layali_rooms_db')) || [],
+            activeRoom: null,
+            pfpBase64: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+            isMusicPlaying: false
+        };
 
-        function saveData() {
-            localStorage.setItem(DB_KEY, JSON.stringify(appData));
+        const bgMusic = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'); // مثال موسيقي
+        bgMusic.loop = true;
+
+        // --- 3. محرك التهيئة ---
+        function initApp() {
+            updateUI();
+            if(state.currentUser) {
+                renderDashboard();
+            } else {
+                showScreen('authScreen');
+            }
+            simulateActiveUsers();
         }
 
-        // --- 2. إدارة المستخدمين وتسجيل الدخول ---
-        
-        // التحقق عند البدء
-        if (appData.user) {
-            showDashboard();
-        }
+        function updateUI() {
+            const langData = i18n[state.lang];
+            document.getElementById('htmlTag').lang = state.lang;
+            document.getElementById('htmlTag').dir = state.lang === 'ar' ? 'rtl' : 'ltr';
+            document.body.className = `lang-${state.lang}`;
+            document.getElementById('langBtnText').innerText = state.lang === 'ar' ? 'English' : 'العربية';
 
-        function simulateGoogleLogin() {
-            Swal.fire({
-                title: 'جاري الاتصال بـ Google...',
-                text: 'يرجى الانتظار لحظات',
-                timer: 2000,
-                didOpen: () => Swal.showLoading()
-            }).then(() => {
-                // محاكاة نجاح الدخول
-                const randomName = "مستخدم جوجل " + Math.floor(Math.random() * 100);
-                loginUser(randomName, 'google');
+            document.querySelectorAll('[data-key]').forEach(el => {
+                el.innerText = langData[el.getAttribute('data-key')];
+            });
+            document.querySelectorAll('[data-placeholder]').forEach(el => {
+                el.placeholder = langData[el.getAttribute('data-placeholder')];
             });
         }
 
-        function guestLogin() {
-            const name = document.getElementById('guestName').value.trim();
-            if (name.length < 3) return Swal.fire('تنبيه', 'الاسم قصير جداً', 'warning');
-            loginUser(name, 'guest');
+        function toggleLanguage() {
+            state.lang = state.lang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('layali_lang', state.lang);
+            updateUI();
         }
 
-        function loginUser(name, type) {
-            appData.user = {
-                name: name,
-                avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
-                gold: 500, // هدية التسجيل
-                type: type,
-                joined: new Date().toLocaleDateString()
-            };
-            saveData();
-            
-            Swal.fire({
-                icon: 'success',
-                title: 'تم تسجيل الدخول بنجاح',
-                text: 'أهلاً بك في ليالي العرب',
-                timer: 1500,
-                showConfirmButton: false
-            }).then(() => showDashboard());
-        }
-
-        function logout() {
-            appData.user = null;
-            saveData();
-            location.reload();
-        }
-
-        // --- 3. عرض الداشبورد ---
-        function showDashboard() {
+        function showScreen(screenId) {
             document.getElementById('authScreen').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('mainApp').classList.add('animate__animated', 'animate__fadeIn');
-
-            updateNavBar();
-            renderSupporters();
-            renderRooms();
-            
-            // عداد وهمي يزيد التفاعل
-            setInterval(() => {
-                const count = document.getElementById('onlineCount');
-                let current = parseInt(count.innerText.replace(',', ''));
-                count.innerText = (current + Math.floor(Math.random() * 5) - 2).toLocaleString();
-            }, 3000);
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('chatView').classList.add('hidden');
+            document.getElementById(screenId).classList.remove('hidden');
         }
 
-        function updateNavBar() {
-            const u = appData.user;
-            document.getElementById('navName').innerText = u.name;
-            document.getElementById('welcomeName').innerText = u.name;
-            document.getElementById('navAvatar').src = u.avatar;
-            document.getElementById('navGold').innerText = u.gold.toLocaleString();
-        }
-
-        function editProfile() {
-            Swal.fire({
-                title: 'تعديل الملف الشخصي',
-                html: `
-                    <div class="mb-4"><img src="${appData.user.avatar}" class="w-20 h-20 mx-auto rounded-full border-2 border-yellow-500"></div>
-                    <button onclick="changeUserAvatar()" class="text-xs text-blue-400 underline mb-4">تغيير الصورة</button>
-                    <input id="newProfileName" class="swal2-input" value="${appData.user.name}">
-                `,
-                confirmButtonText: 'حفظ',
-                confirmButtonColor: '#d4af37',
-                preConfirm: () => {
-                    const newName = document.getElementById('newProfileName').value;
-                    if(newName) {
-                        appData.user.name = newName;
-                        appData.user.avatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${newName}`; // تحديث الافتار مع الاسم
-                        saveData();
-                        updateNavBar();
-                    }
-                }
-            });
-        }
-        
-        function changeUserAvatar() {
-            // بسيطة لتوليد صورة جديدة عشوائية
-            appData.user.avatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${Math.random()}`;
-            saveData();
-            updateNavBar();
-            Swal.close(); // إغلاق وتحديث
-            Swal.fire('تم!', 'تم تحديث الصورة', 'success');
-        }
-
-        // --- 4. لوحة الداعمين ---
-        function renderSupporters() {
-            const list = document.getElementById('supportersList');
-            list.innerHTML = '';
-            
-            // ترتيب الداعمين
-            const sorted = [...appData.supporters].sort((a, b) => b.gold - a.gold);
-
-            sorted.forEach((s, index) => {
-                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
-                list.innerHTML += `
-                    <div class="flex items-center justify-between bg-black/40 p-2 rounded-lg border border-white/5">
-                        <div class="flex items-center gap-2">
-                            <span class="text-lg">${index < 3 ? medal : '#'+(index+1)}</span>
-                            <img src="${s.avatar}" class="w-8 h-8 rounded-full border border-yellow-500/30">
-                            <span class="text-xs font-bold text-gray-200">${s.name}</span>
-                        </div>
-                        <span class="text-[10px] text-yellow-500 font-mono">${s.gold.toLocaleString()}</span>
-                    </div>
-                `;
-            });
-        }
-
-        function becomeSupporter() {
-            Swal.fire({
-                title: 'دعم المنصة',
-                text: 'هل تريد التبرع بـ 100 ذهبة للظهور في القائمة؟',
-                showCancelButton: true,
-                confirmButtonText: 'نعم، ادعم',
-                confirmButtonColor: '#d4af37'
-            }).then((res) => {
-                if (res.isConfirmed) {
-                    if(appData.user.gold >= 100) {
-                        appData.user.gold -= 100;
-                        // إضافة المستخدم للقائمة الوهمية مؤقتاً
-                        const existing = appData.supporters.find(s => s.name === appData.user.name);
-                        if(existing) existing.gold += 100;
-                        else appData.supporters.push({ name: appData.user.name, gold: 100, avatar: appData.user.avatar });
-                        
-                        saveData();
-                        updateNavBar();
-                        renderSupporters();
-                        Swal.fire('شكراً لك!', 'أنت الآن من نخبة الداعمين', 'success');
-                    } else {
-                        Swal.fire('عذراً', 'لا تملك ذهباً كافياً', 'error');
-                    }
-                }
-            });
-        }
-
-        // --- 5. نظام الغرف ---
-        function renderRooms() {
-            const grid = document.getElementById('roomsGrid');
-            grid.innerHTML = '';
-            
-            appData.rooms.forEach(room => {
-                grid.innerHTML += `
-                    <div onclick="enterRoom('${room.name}', '${room.id}')" class="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-yellow-500/50 p-5 rounded-2xl cursor-pointer transition relative overflow-hidden">
-                        <div class="absolute -right-4 -top-4 w-20 h-20 bg-yellow-500/20 blur-2xl rounded-full group-hover:bg-yellow-500/30 transition"></div>
-                        
-                        <div class="flex justify-between items-start mb-3">
-                            <div class="bg-blue-900/50 p-2 rounded-lg text-blue-300">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <span class="text-[10px] bg-green-900/50 text-green-400 px-2 py-1 rounded">مباشر</span>
-                        </div>
-                        
-                        <h4 class="font-bold text-lg mb-1">${room.name}</h4>
-                        <p class="text-xs text-gray-400 mb-3">المضيف: ${room.host}</p>
-                        
-                        <div class="flex items-center gap-2 text-xs text-gray-500">
-                            <i class="fas fa-user-friends"></i> ${room.users} متصل
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        async function createRoomPrompt() {
-            const { value: formValues } = await Swal.fire({
-                title: 'إنشاء خيمة جديدة',
-                html: '<input id="swal-input1" class="swal2-input" placeholder="اسم الخيمة">',
-                confirmButtonText: 'إنشاء',
-                confirmButtonColor: '#10b981',
-                preConfirm: () => document.getElementById('swal-input1').value
-            });
-
-            if (formValues) {
-                const newId = 'RM' + Math.floor(Math.random() * 1000);
-                const newRoom = { id: newId, name: formValues, host: appData.user.name, users: 1 };
-                appData.rooms.unshift(newRoom);
-                saveData();
-                renderRooms();
-                enterRoom(newRoom.name, newId);
+        // --- 4. نظام العضوية ---
+        function handlePfp(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    state.pfpBase64 = e.target.result;
+                    document.getElementById('pfpPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // --- 6. داخل الغرفة والشات ---
-        let currentRoomId = null;
+        function switchAuth(isLogin) {
+            document.getElementById('regBox').classList.toggle('hidden', isLogin);
+            document.getElementById('loginBox').classList.toggle('hidden', !isLogin);
+        }
 
-        function enterRoom(name, id) {
-            currentRoomId = id;
-            document.getElementById('mainApp').classList.add('hidden');
-            document.getElementById('roomInterface').classList.remove('hidden');
-            document.getElementById('currentRoomTitle').innerText = name;
-            document.getElementById('roomCodeDisplay').innerText = id;
+        function register() {
+            const user = document.getElementById('regUser').value.trim();
+            const pass = document.getElementById('regPass').value.trim();
             
-            // تنظيف الشات وإضافة رسالة ترحيب
-            const chat = document.getElementById('chatContainer');
-            chat.innerHTML = `<div class="text-center text-xs text-gray-500 my-4">-- انضم ${appData.user.name} للمحادثة --</div>`;
+            if(user.length < 3 || pass.length < 5) {
+                return toast('البيانات قصيرة جداً!', 'error');
+            }
+
+            if(state.users.find(u => u.user === user)) {
+                return toast('هذا الاسم محجوز!', 'warning');
+            }
+
+            const newUser = {
+                user, pass, 
+                avatar: state.pfpBase64,
+                gold: 500, xp: 0, level: 1,
+                joined: new Date().toLocaleDateString()
+            };
+
+            state.users.push(newUser);
+            saveData('layali_db', state.users);
+            toast('تم إنشاء الهوية بنجاح! تفضل بالدخول', 'success');
+            switchAuth(true);
+        }
+
+        function login() {
+            const user = document.getElementById('logUser').value.trim();
+            const pass = document.getElementById('logPass').value.trim();
+            
+            const found = state.users.find(u => u.user === user && u.pass === pass);
+            if(found) {
+                state.currentUser = found;
+                saveData('layali_user', found);
+                renderDashboard();
+            } else {
+                toast('خطأ في الاسم أو كلمة السر', 'error');
+            }
+        }
+
+        function mockGoogleLogin() {
+            toast('جاري الاتصال بخوادم Google...', 'info');
+            setTimeout(() => {
+                state.currentUser = { user: "G_User_" + Math.floor(Math.random()*100), avatar: "https://cdn-icons-png.flaticon.com/512/300/300221.png", gold: 1000, xp: 100, level: 3 };
+                renderDashboard();
+            }, 1500);
+        }
+
+        // --- 5. محرك الغرف والدردشة ---
+        function renderDashboard() {
+            showScreen('mainApp');
+            const u = state.currentUser;
+            document.getElementById('navPfp').src = u.avatar;
+            document.getElementById('navName').innerText = u.user;
+            document.getElementById('navGold').innerText = u.gold;
+            document.getElementById('userLevel').innerText = `LVL ${u.level || 1}`;
+            document.getElementById('xpBar').style.width = `${(u.xp % 100)}%`;
+            document.getElementById('liveCounter').innerText = Math.floor(Math.random() * 200) + 50;
+            document.getElementById('roomCounter').innerText = state.rooms.length;
+            renderRooms();
+        }
+
+        async function showCreateRoom() {
+            const { value: formValues } = await Swal.fire({
+                title: `<span class="gold-text">${i18n[state.lang].newRoom}</span>`,
+                html: `
+                    <input id="rName" class="swal2-input" style="background:rgba(0,0,0,0.1); border-radius:15px;" placeholder="${i18n[state.lang].roomName}">
+                    <input id="rPass" type="password" class="swal2-input" style="background:rgba(0,0,0,0.1); border-radius:15px;" placeholder="${i18n[state.lang].roomPass}">
+                `,
+                background: '#020617',
+                color: '#fff',
+                confirmButtonText: i18n[state.lang].create,
+                confirmButtonColor: '#d4af37',
+                preConfirm: () => [document.getElementById('rName').value, document.getElementById('rPass').value]
+            });
+
+            if (formValues && formValues[0]) {
+                const newRoom = {
+                    id: 'L-ARAB-' + Math.floor(Math.random() * 9000),
+                    name: formValues[0],
+                    pass: formValues[1],
+                    host: state.currentUser.user,
+                    members: 1,
+                    msgs: [],
+                    created: Date.now()
+                };
+                state.rooms.unshift(newRoom);
+                saveRooms();
+                joinRoom(newRoom.id);
+            }
+        }
+
+        function renderRooms(filter = 'all') {
+            const grid = document.getElementById('roomsGrid');
+            const trend = document.getElementById('trendingList');
+            grid.innerHTML = ''; trend.innerHTML = '';
+            
+            let filtered = state.rooms;
+            if(filter === 'public') filtered = state.rooms.filter(r => !r.pass);
+            if(filter === 'private') filtered = state.rooms.filter(r => r.pass);
+
+            if(filtered.length === 0) {
+                document.getElementById('emptyRooms').classList.remove('hidden');
+            } else {
+                document.getElementById('emptyRooms').classList.add('hidden');
+            }
+
+            filtered.forEach((r, idx) => {
+                const card = `
+                    <div onclick="checkRoomAccess('${r.id}')" class="glass p-6 rounded-[2.5rem] border border-white/5 hover:border-yellow-500/50 transition-all cursor-pointer group animate__animated animate__zoomIn">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-500/20 to-transparent flex items-center justify-center text-yellow-500 text-xl">
+                                <i class="fas ${r.pass ? 'fa-fingerprint' : 'fa-tent'}"></i>
+                            </div>
+                            ${r.pass ? '<span class="text-[8px] bg-red-500/20 text-red-500 px-2 py-1 rounded-full">PRIVATE</span>' : '<span class="text-[8px] bg-green-500/20 text-green-500 px-2 py-1 rounded-full">OPEN</span>'}
+                        </div>
+                        <h4 class="font-black text-lg truncate">${r.name}</h4>
+                        <p class="text-[10px] text-gray-500 mt-1">المضيف: ${r.host}</p>
+                        
+                        <div class="mt-6 flex justify-between items-center">
+                            <div class="flex -space-x-2">
+                                <div class="w-6 h-6 rounded-full border-2 border-black bg-gray-700"></div>
+                                <div class="w-6 h-6 rounded-full border-2 border-black bg-gray-600"></div>
+                                <div class="w-6 h-6 rounded-full border-2 border-black bg-yellow-500 flex items-center justify-center text-[8px]">+${r.members}</div>
+                            </div>
+                            <i class="fas fa-chevron-left text-yellow-500 group-hover:translate-x-[-5px] transition-transform"></i>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += card;
+
+                if(idx < 3) {
+                    trend.innerHTML += `
+                        <div class="flex items-center gap-4 bg-white/5 p-3 rounded-2xl border border-white/5">
+                            <span class="text-2xl font-black text-yellow-900">${idx+1}</span>
+                            <div class="flex-1">
+                                <p class="text-xs font-bold truncate">${r.name}</p>
+                                <p class="text-[9px] text-gray-500">${r.members} متفاعل</p>
+                            </div>
+                            <div class="w-2 h-2 bg-yellow-500 rounded-full shadow-[0_0_10px_gold]"></div>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function checkRoomAccess(id) {
+            const r = state.rooms.find(rm => rm.id === id);
+            if(r.pass) {
+                Swal.fire({
+                    title: 'هذا المجلس خاص',
+                    input: 'password',
+                    inputPlaceholder: 'أدخل رمز الدخول...',
+                    background: '#020617', color: '#fff',
+                    confirmButtonColor: '#d4af37'
+                }).then(res => {
+                    if(res.value === r.pass) joinRoom(id);
+                    else if(res.value) toast('الرمز خاطئ يا طيب!', 'error');
+                });
+            } else joinRoom(id);
+        }
+
+        function joinRoom(id) {
+            state.activeRoom = state.rooms.find(rm => rm.id === id);
+            state.activeRoom.members++;
+            showScreen('chatView');
+            document.getElementById('roomTitle').innerText = state.activeRoom.name;
+            document.getElementById('roomCodeDisplay').innerText = `ID: ${state.activeRoom.id}`;
+            renderMsgs();
+            saveRooms();
+            
+            // رسالة ترحيب ذكية
+            setTimeout(() => {
+                systemMsg(`أهلاً بك ${state.currentUser.user} في مجلسنا المتواضع!`);
+            }, 1000);
         }
 
         function leaveRoom() {
-            document.getElementById('roomInterface').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-            currentRoomId = null;
+            if(state.activeRoom) state.activeRoom.members = Math.max(1, state.activeRoom.members - 1);
+            state.activeRoom = null;
+            renderDashboard();
+            saveRooms();
         }
 
-        function sendMessage() {
+        // --- 6. الدردشة والهدايا ---
+        function sendMsg() {
             const inp = document.getElementById('msgInput');
             const txt = inp.value.trim();
             if(!txt) return;
 
-            appendMessage(txt, true);
+            const msg = {
+                user: state.currentUser.user,
+                pfp: state.currentUser.avatar,
+                txt: txt,
+                lvl: state.currentUser.level,
+                time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+                type: 'text'
+            };
+
+            state.activeRoom.msgs.push(msg);
             inp.value = '';
-
-            // محاكاة رد تلقائي لتشعر بالحياة
-            setTimeout(() => {
-                const responses = ["منور يا غالي 🌹", "رمضان كريم!", "صح لسانك", "أهلاً بك"];
-                const randResp = responses[Math.floor(Math.random() * responses.length)];
-                appendMessage(randResp, false, "عضو عشوائي");
-            }, 2000);
+            inp.style.height = 'auto';
+            
+            // زيادة الـ XP
+            state.currentUser.xp += 5;
+            if(state.currentUser.xp % 100 === 0) {
+                state.currentUser.level++;
+                toast('مبروك! ارتفع مستواك', 'success');
+            }
+            
+            renderMsgs();
+            saveRooms();
+            updateUserGold();
         }
 
-        function appendMessage(text, isMe, senderName = null) {
-            const chat = document.getElementById('chatContainer');
-            const name = isMe ? appData.user.name : (senderName || "ضيف");
-            const avatar = isMe ? appData.user.avatar : `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`;
-            
-            const div = document.createElement('div');
-            div.className = `flex gap-2 items-end ${isMe ? 'flex-row-reverse' : ''} animate__animated animate__fadeInUp`;
-            
-            div.innerHTML = `
-                <img src="${avatar}" class="w-8 h-8 rounded-full border border-gray-600">
-                <div class="${isMe ? 'bg-yellow-600 text-white rounded-l-2xl rounded-tr-2xl' : 'bg-gray-800 text-gray-200 rounded-r-2xl rounded-tl-2xl'} px-4 py-2 max-w-[70%] text-sm shadow-md">
-                    <p class="text-[10px] opacity-50 mb-1 ${isMe ? 'text-right' : ''}">${name}</p>
-                    ${text}
-                </div>
-            `;
-            
-            chat.appendChild(div);
-            chat.scrollTop = chat.scrollHeight;
+        function sendGift(emoji, cost) {
+            if(state.currentUser.gold < cost) {
+                return toast(i18n[state.lang].lowGold, 'error');
+            }
+
+            state.currentUser.gold -= cost;
+            const msg = {
+                user: state.currentUser.user,
+                pfp: state.currentUser.avatar,
+                txt: `${emoji} أرسل هدية مميزة للمجلس!`,
+                time: 'الآن',
+                type: 'gift',
+                emoji: emoji
+            };
+
+            state.activeRoom.msgs.push(msg);
+            document.getElementById('navGold').innerText = state.currentUser.gold;
+            toggleGiftPanel();
+            renderMsgs();
+            saveRooms();
+            saveData('layali_user', state.currentUser);
         }
 
-        function donateInRoom() {
-            if(appData.user.gold >= 50) {
-                appData.user.gold -= 50;
-                saveData();
-                updateNavBar();
+        function renderMsgs() {
+            const box = document.getElementById('msgContainer');
+            box.innerHTML = '';
+            
+            state.activeRoom.msgs.forEach(m => {
+                const isMe = m.user === state.currentUser.user;
+                const bubbleClass = m.type === 'gift' ? 'bg-gradient-to-r from-yellow-600 to-yellow-900 border border-yellow-400 animate__animated animate__pulse' : (isMe ? 'bg-yellow-600 text-white shadow-xl' : 'glass border border-white/10');
                 
-                // رسالة خاصة للدعم
-                const chat = document.getElementById('chatContainer');
-                chat.innerHTML += `
-                    <div class="text-center my-4 animate__animated animate__heartBeat">
-                        <span class="bg-yellow-500/20 text-yellow-500 border border-yellow-500 px-3 py-1 rounded-full text-xs font-bold">
-                            💎 أرسل ${appData.user.name} هدية ذهبية!
-                        </span>
+                box.innerHTML += `
+                    <div class="flex gap-3 ${isMe ? 'flex-row-reverse' : ''} animate__animated animate__fadeInUp">
+                        <div class="flex flex-col items-center gap-1">
+                            <img src="${m.pfp}" class="w-10 h-10 rounded-full border-2 border-yellow-500 object-cover shadow-lg">
+                            <span class="level-badge">LVL ${m.lvl || 1}</span>
+                        </div>
+                        <div class="max-w-[80%]">
+                            <div class="msg-bubble ${bubbleClass}">
+                                <div class="flex justify-between items-center gap-4 mb-1">
+                                    <span class="text-[10px] font-black ${isMe ? 'text-white/70' : 'text-yellow-500'}">${m.user}</span>
+                                    <span class="text-[8px] opacity-40">${m.time}</span>
+                                </div>
+                                <p class="text-sm leading-relaxed">${m.txt}</p>
+                                ${m.type === 'gift' ? `<div class="text-4xl mt-2 text-center">${m.emoji}</div>` : ''}
+                            </div>
+                        </div>
                     </div>
                 `;
-                chat.scrollTop = chat.scrollHeight;
+            });
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function systemMsg(txt) {
+            const box = document.getElementById('msgContainer');
+            box.innerHTML += `
+                <div class="flex justify-center py-2 animate__animated animate__fadeIn">
+                    <span class="text-[10px] text-gray-500 italic">-- ${txt} --</span>
+                </div>
+            `;
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // --- 7. الوظائف المساعدة (Helpers) ---
+        function toast(msg, icon) {
+            const Toast = Swal.mixin({
+                toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true,
+                background: '#1e1b4b', color: '#fff'
+            });
+            Toast.fire({ icon, title: msg });
+        }
+
+        function saveData(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+        function saveRooms() { saveData('layali_rooms_db', state.rooms); }
+
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+
+        function toggleGiftPanel() { document.getElementById('giftPanel').classList.toggle('hidden'); }
+
+        function toggleMusic() {
+            state.isMusicPlaying = !state.isMusicPlaying;
+            const btn = document.getElementById('musicToggle');
+            if(state.isMusicPlaying) {
+                bgMusic.play();
+                btn.innerHTML = '<i class="fas fa-volume-up text-yellow-500"></i>';
+                btn.classList.add('animate-pulse');
             } else {
-                Swal.fire('تنبيه', 'رصيدك غير كافٍ', 'warning');
+                bgMusic.pause();
+                btn.innerHTML = '<i class="fas fa-volume-mute text-gray-400"></i>';
+                btn.classList.remove('animate-pulse');
             }
         }
 
-        function sendLike() {
-             const chat = document.getElementById('chatContainer');
-             // إضافة قلوب طائرة (تأثير بصري فقط)
-             const heart = document.createElement('div');
-             heart.innerHTML = '❤️';
-             heart.style.position = 'fixed';
-             heart.style.left = Math.random() * 80 + 10 + '%';
-             heart.style.bottom = '100px';
-             heart.style.fontSize = '2rem';
-             heart.style.animation = 'float 2s ease-out forwards';
-             heart.style.zIndex = '100';
-             document.body.appendChild(heart);
-             setTimeout(() => heart.remove(), 2000);
+        function simulateActiveUsers() {
+            const list = document.getElementById('activeUsersList');
+            const names = ['عاشق القهوة', 'نور الرمضان', 'سيف العرب', 'بنت الأجواد', 'الرايق', 'الزعيم'];
+            names.forEach(n => {
+                list.innerHTML += `
+                    <div class="flex items-center gap-3 opacity-60 hover:opacity-100 transition cursor-default">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-700 to-gray-800 flex items-center justify-center text-[10px] font-bold">
+                            ${n[0]}
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-xs font-bold">${n}</p>
+                            <p class="text-[8px] text-green-500">نشط الآن</p>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
+        function logout() {
+            localStorage.removeItem('layali_user');
+            location.reload();
+        }
+
+        // --- 8. تشغيل النظام ---
+        window.onload = initApp;
     </script>
 </body>
 </html>
