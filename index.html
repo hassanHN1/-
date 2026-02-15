@@ -1,300 +1,197 @@
 <!DOCTYPE html>
-<html id="orgApp" lang="ar" dir="rtl">
+<html id="orgMaster" lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة منظمة ليالي العرب | النظام المتكامل</title>
+    <title>منصة منظمة ليالي العرب | Cinema & Voice Pro</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+
     <style>
-        /* --- التصميم الملكي المتقدم --- */
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;400;700;900&family=Exo+2:wght@300;600;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;700;800&family=Orbitron:wght@500;900&display=swap');
 
         :root {
-            --gold-primary: #d4af37;
-            --gold-dark: #b45309;
-            --bg-dark: #020408;
-            --sidebar-color: #06090f;
-            --accent-glow: rgba(212, 175, 55, 0.4);
-            --glass: rgba(255, 255, 255, 0.02);
-            --danger: #ff3e3e;
-            --success: #00ff88;
+            --royal-gold: #d4af37;
+            --deep-black: #020205;
+            --accent-glow: rgba(212, 175, 55, 0.5);
+            --movie-red: #e50914;
         }
 
-        * {
-            margin: 0; padding: 0; box-sizing: border-box;
-            scrollbar-width: thin; scrollbar-color: var(--gold-primary) transparent;
-        }
+        * { cursor: url('https://cur.cursors-4u.net/symbols/sym-1/sym49.cur'), auto !important; }
 
         body {
-            background-color: var(--bg-dark);
-            color: #ffffff;
-            font-family: 'Cairo', sans-serif;
-            height: 100vh;
+            background-color: var(--deep-black);
+            color: #fff;
+            font-family: 'Almarai', sans-serif;
             overflow: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 10%, rgba(212, 175, 55, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 90% 90%, rgba(212, 175, 55, 0.05) 0%, transparent 40%);
+            height: 100vh;
         }
 
-        /* تحسينات الواجهة */
-        .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
+        /* واجهة السينما الكبرى */
+        .cinema-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            height: 100vh;
         }
 
-        .gold-text {
-            background: linear-gradient(135deg, #fde68a 0%, #d4af37 50%, #b45309 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* شريط التنقل الجانبي (على غرار ديسكورد ولكن أفخم) */
-        .side-nav {
-            width: 85px;
-            background: var(--sidebar-color);
+        .main-theater {
+            position: relative;
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 20px 0;
-            border-left: 1px solid rgba(212, 175, 55, 0.1);
         }
 
-        .nav-item {
-            width: 58px; height: 58px;
-            background: #10141d;
-            border-radius: 18px;
-            margin-bottom: 15px;
-            display: flex; items-center: center; justify-content: center;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            color: #4a5568;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            border-radius: 14px;
-            background: var(--gold-primary);
-            color: #000;
-            box-shadow: 0 0 20px var(--accent-glow);
-        }
-
-        .nav-item.active::after {
-            content: ''; position: absolute; left: -15px;
-            width: 5px; height: 35px; background: var(--gold-primary);
-            border-radius: 0 5px 5px 0;
-        }
-
-        /* منطقة المحتوى */
-        .main-container {
+        /* مشغل الفيديو الملكي */
+        .video-container {
             flex: 1;
-            display: grid;
-            grid-template-columns: 300px 1fr 320px;
-            height: 100vh;
+            position: relative;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 100px rgba(212, 175, 55, 0.1);
         }
 
-        /* الغرف والقنوات */
-        .channel-sidebar {
-            background: #080b12;
-            border-left: 1px solid rgba(255,255,255,0.03);
-            display: flex; flex-direction: column;
+        #main-video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
-        .channel-header {
-            padding: 25px;
-            font-size: 1.2rem;
-            font-weight: 900;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-        }
-
-        .create-room-btn {
-            background: linear-gradient(135deg, #d4af37, #92400e);
-            margin: 20px;
-            padding: 16px;
-            border-radius: 16px;
-            text-align: center;
+        /* شريط اللغة الماسي */
+        .lang-diamond {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 2000;
+            background: linear-gradient(135deg, var(--royal-gold), #b45309);
+            padding: 10px 20px;
+            clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
             font-weight: 900;
             color: #000;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 0 20px var(--accent-glow);
             transition: 0.3s;
         }
+        .lang-diamond:hover { transform: scale(1.1); filter: brightness(1.2); }
 
-        .create-room-btn:hover {
-            transform: translateY(-3px);
-            filter: brightness(1.1);
+        /* منطقة المحادثة الصوتية (Floating Avatars) */
+        .voice-overlay {
+            position: absolute;
+            bottom: 100px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 100;
         }
 
-        /* شاشة العرض والبودكاست */
-        .stage-view {
-            background: #04060a;
+        .user-orb {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            border: 2px solid var(--royal-gold);
+            background: #000;
+            display: flex; align-items: center; justify-content: center;
             position: relative;
-            display: flex; flex-direction: column;
+            transition: 0.5s;
         }
 
-        .video-canvas {
+        .user-orb.speaking {
+            box-shadow: 0 0 25px var(--royal-gold);
+            transform: scale(1.2);
+        }
+
+        .user-orb img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+
+        /* لوحة التحكم المخفية (تظهر عند الحركة) */
+        .cinema-controls {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            opacity: 0;
+            transition: 0.5s;
+        }
+        .main-theater:hover .cinema-controls { opacity: 1; }
+
+        .control-unit {
+            width: 70px; height: 70px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--royal-gold);
+            border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .control-unit:hover { background: var(--royal-gold); color: #000; transform: translateY(-10px); }
+
+        /* الدردشة الجانبية */
+        .side-chat {
+            background: #050507;
+            border-right: 1px solid rgba(212, 175, 55, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 30px;
+            background: linear-gradient(to bottom, #0a0a0f, transparent);
+            text-align: center;
+        }
+
+        .message-box {
             flex: 1;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 20px;
-            padding: 25px;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex; flex-direction: column; gap: 15px;
+        }
+
+        .msg-bubble {
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-radius: 20px;
+            border-right: 3px solid var(--royal-gold);
+            max-width: 90%;
+        }
+
+        /* واجهة اختيار الأفلام (Dashboard) */
+        #movieDashboard {
+            position: fixed; inset: 0;
+            background: var(--deep-black);
+            z-index: 5000;
+            display: flex; flex-direction: column;
+            padding: 50px;
             overflow-y: auto;
         }
 
-        .participant-card {
-            background: #0c111a;
-            border-radius: 30px;
-            aspect-ratio: 16/10;
+        .movie-card {
             position: relative;
+            border-radius: 20px;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
-            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: 0.5s;
+            border: 1px solid rgba(255,255,255,0.1);
         }
+        .movie-card:hover { transform: scale(1.05); border-color: var(--royal-gold); }
 
-        .talking-ring {
-            position: absolute;
-            inset: 0;
-            border: 3px solid transparent;
-            border-radius: 30px;
-        }
-
-        .is-talking .talking-ring {
-            border-color: var(--gold-primary);
-            animation: ring-pulse 1s infinite;
-        }
-
-        @keyframes ring-pulse {
-            0% { box-shadow: inset 0 0 10px var(--accent-glow); }
-            50% { box-shadow: inset 0 0 30px var(--accent-glow); }
-            100% { box-shadow: inset 0 0 10px var(--accent-glow); }
-        }
-
-        /* نظام مشاركة الشاشة السينمائي */
-        .screen-share-overlay {
-            grid-column: 1 / -1;
-            height: 75vh;
-            background: #000;
-            border: 2px solid var(--gold-primary);
-        }
-
-        /* شريط التحكم السفلي المهيب */
-        .dock-bar {
-            background: rgba(10, 14, 23, 0.95);
-            backdrop-filter: blur(20px);
-            margin: 20px auto;
+        .gold-button {
+            background: var(--royal-gold);
+            color: #000;
             padding: 15px 40px;
-            border-radius: 25px;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            display: flex; gap: 25px;
-            align-items: center;
-            width: fit-content;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
-        }
-
-        .dock-btn {
-            width: 55px; height: 55px;
-            border-radius: 18px;
-            display: flex; items-center: center; justify-content: center;
-            background: #1a1f2b;
-            cursor: pointer;
-            font-size: 1.3rem;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-
-        .dock-btn:hover {
-            background: var(--gold-primary);
-            color: #000;
-            transform: scale(1.1) translateY(-5px);
-        }
-
-        .dock-btn.danger { color: var(--danger); }
-        .dock-btn.danger:hover { background: var(--danger); color: #fff; }
-
-        .dock-btn.active {
-            background: var(--gold-primary);
-            color: #000;
-        }
-
-        /* التلميحات (Tooltips) */
-        .dock-btn::before {
-            content: attr(data-tooltip);
-            position: absolute; top: -45px;
-            background: #d4af37; color: #000;
-            padding: 5px 12px; border-radius: 8px;
-            font-size: 12px; font-weight: 900;
-            white-space: nowrap; opacity: 0;
-            pointer-events: none; transition: 0.3s;
-        }
-
-        .dock-btn:hover::before { opacity: 1; top: -55px; }
-
-        /* قائمة الأعضاء */
-        .members-list {
-            background: #080b12;
-            border-right: 1px solid rgba(255,255,255,0.03);
-            padding: 20px;
-        }
-
-        /* نظام الدردشة الاحترافي */
-        .chat-panel {
-            position: fixed; right: -400px; top: 0; bottom: 0;
-            width: 380px; background: #0a0e17;
-            border-right: 1px solid var(--gold-primary);
-            z-index: 1000; transition: 0.5s cubic-bezier(0.7, 0, 0.3, 1);
-            display: flex; flex-direction: column;
-        }
-
-        .chat-panel.open { right: 0; }
-
-        /* شاشة الدخول */
-        #loginScreen {
-            position: fixed; inset: 0; z-index: 9999;
-            background: var(--bg-dark);
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .login-box {
-            width: 450px; padding: 50px;
-            background: #0a0e14;
-            border-radius: 40px;
-            border: 1px solid rgba(212, 175, 55, 0.1);
-            text-align: center;
-        }
-
-        /* اللغة والملف الشخصي (الموقع الجديد) */
-        .user-footer {
-            margin-top: auto;
-            padding: 20px;
-            background: #05070c;
-            display: flex; align-items: center; gap: 12px;
-        }
-
-        .lang-toggle {
-            padding: 5px 10px;
-            border: 1px solid var(--gold-primary);
-            border-radius: 8px;
-            font-size: 10px;
+            border-radius: 50px;
             font-weight: 900;
-            cursor: pointer;
-            color: var(--gold-primary);
-        }
-
-        /* Full Screen Mode */
-        .fullscreen-active .video-canvas { padding: 0; gap: 0; }
-        .fullscreen-active .participant-card { border-radius: 0; }
-
-        /* Visualizer */
-        #visualizerCanvas {
-            width: 100%; height: 60px;
-            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
         }
 
         .hidden { display: none !important; }
@@ -302,443 +199,240 @@
 </head>
 <body class="lang-ar">
 
-    <div id="loginScreen" class="animate__animated animate__fadeIn">
-        <div class="login-box glass-card shadow-2xl">
-            <div class="mb-8">
-                <i class="fas fa-mosque text-6xl gold-text mb-4"></i>
-                <h1 class="text-4xl font-black gold-text">منظمة ليالي العرب</h1>
-                <p class="text-gray-500 mt-2 uppercase tracking-widest text-[10px]" data-key="motto">The Elite Social Protocol</p>
+    <div class="lang-diamond" onclick="toggleLang()">ENGLISH MODE</div>
+
+    <section id="movieDashboard">
+        <header class="flex justify-between items-center mb-12">
+            <div>
+                <h1 class="text-6xl font-black italic gold-text tracking-tighter">منظمة ليالي العرب</h1>
+                <p class="text-gray-500 mt-2 uppercase">The Ultimate Cinema & Social Protocol</p>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="createNewShow()" class="gold-button">أنشئ خيمة عرض</button>
+            </div>
+        </header>
+
+        <h2 class="text-2xl font-bold mb-8 flex items-center gap-3">
+            <i class="fas fa-fire text-orange-500"></i>
+            مقترحات المنظمة (فودو العراق و سيمانا)
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div onclick="playMovie('https://vjs.zencdn.net/v/oceans.mp4', 'محيطات العالم')" class="movie-card group">
+                <img src="https://images.unsplash.com/photo-1439405326854-01517489c73e?auto=format&fit=crop&w=800&q=80" class="w-full h-80 object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
+                <div class="absolute bottom-6 right-6">
+                    <h3 class="text-xl font-black">فيلم: المحيط الهادئ</h3>
+                    <p class="text-xs text-yellow-500">جودة 4K | مباشر الآن</p>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                    <i class="fas fa-play-circle text-6xl text-white"></i>
+                </div>
             </div>
 
-            <div class="space-y-6">
-                <div class="relative">
-                    <input type="text" id="username" data-placeholder="username" class="w-full bg-black/40 border border-white/5 p-5 rounded-2xl outline-none focus:border-gold-primary transition text-center font-bold">
-                    <i class="fas fa-user absolute left-5 top-6 text-gray-600"></i>
-                </div>
-                <div class="relative">
-                    <input type="password" id="password" data-placeholder="password" class="w-full bg-black/40 border border-white/5 p-5 rounded-2xl outline-none focus:border-gold-primary transition text-center font-bold">
-                    <i class="fas fa-lock absolute left-5 top-6 text-gray-600"></i>
-                </div>
-                <button onclick="Core.auth.login()" class="create-room-btn w-full !m-0 !py-5 text-xl">تفعيل الدخول الملكي</button>
-            </div>
-            
-            <div class="mt-8 flex justify-center gap-4">
-                <div onclick="Core.ui.toggleLang()" class="lang-toggle">ENGLISH MODE</div>
+            <div onclick="promptCustomUrl()" class="movie-card bg-zinc-900 flex flex-col items-center justify-center p-10 border-dashed border-2 border-zinc-700">
+                <i class="fas fa-link text-4xl mb-4 text-gray-500"></i>
+                <h3 class="font-bold">تشغيل رابط فودو خاص</h3>
+                <p class="text-[10px] text-gray-400 mt-2 text-center">أدخل رابط البث المباشر وشاهده مع أصدقائك</p>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div id="appBody" class="hidden flex h-screen">
+    <main id="theatreMode" class="cinema-grid hidden">
         
-        <nav class="side-nav">
-            <div class="nav-item active" data-tooltip="الرئيسية"><i class="fas fa-shield-halved"></i></div>
-            <div class="nav-item" data-tooltip="الأعضاء"><i class="fas fa-user-group"></i></div>
-            <div class="nav-item" data-tooltip="الإحصائيات"><i class="fas fa-chart-line"></i></div>
-            <div class="w-10 h-[1px] bg-white/5 my-4"></div>
-            <div class="nav-item" data-tooltip="الإعدادات"><i class="fas fa-sliders"></i></div>
-        </nav>
-
-        <div class="main-container">
-            
-            <aside class="channel-sidebar">
-                <div class="channel-header gold-text">قنوات المنظمة</div>
-                
-                <div id="createRoomBtn" onclick="Core.rooms.showModal()" class="create-room-btn">
-                    <i class="fas fa-plus-circle mr-2"></i>
-                    <span data-key="createRoom">إنشاء خيمة جديدة</span>
-                </div>
-
-                <div class="flex-1 overflow-y-auto px-4 space-y-2" id="roomContainer">
-                    </div>
-
-                <div class="user-footer">
-                    <div class="relative w-12 h-12">
-                        <img id="myAvatar" src="https://ui-avatars.com/api/?background=d4af37&color=000&bold=true" class="w-full h-full rounded-2xl border border-gold-primary">
-                        <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-black rounded-full"></div>
-                    </div>
-                    <div class="flex-1">
-                        <p id="myName" class="text-sm font-black truncate w-24">القائد</p>
-                        <p class="text-[9px] text-gray-500 uppercase">Master Admin</p>
-                    </div>
-                    <div onclick="Core.ui.toggleLang()" class="lang-toggle">EN</div>
-                </div>
-            </aside>
-
-            <main class="stage-view">
-                <header class="p-6 flex justify-between items-center border-bottom border-white/5 glass-card !rounded-none">
-                    <div class="flex items-center gap-4">
-                        <div id="roomStatusIcon" class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                        <h2 id="currentRoomTitle" class="text-2xl font-black">انتظار الأوامر...</h2>
-                    </div>
-                    <div class="flex gap-4">
-                        <div class="glass-card px-4 py-2 flex items-center gap-3">
-                            <i class="fas fa-users text-gold-primary"></i>
-                            <span id="memberCount" class="font-bold">0</span>
-                        </div>
-                    </div>
-                </header>
-
-                <div id="stageGrid" class="video-canvas">
-                    <div id="emptyStage" class="col-span-full flex flex-col items-center justify-center opacity-20">
-                        <i class="fas fa-podcast text-[10rem] mb-6"></i>
-                        <h1 class="text-4xl font-black">ادخل إلى خيمة للبدء</h1>
+        <section class="main-theater">
+            <div class="absolute top-0 left-0 right-0 p-8 flex justify-between items-center z-50 pointer-events-none">
+                <div class="flex items-center gap-4 bg-black/40 backdrop-blur-md p-4 rounded-2xl pointer-events-auto">
+                    <i onclick="exitTheatre()" class="fas fa-arrow-right text-royal-gold cursor-pointer hover:scale-120 transition"></i>
+                    <div>
+                        <h4 id="nowPlayingTitle" class="font-black text-xl">اسم العرض</h4>
+                        <p class="text-[10px] text-green-500 uppercase font-black"><i class="fas fa-signal"></i> بث مباشر متزامن</p>
                     </div>
                 </div>
-
-                <div id="controlDock" class="hidden dock-bar animate__animated animate__slideInUp">
-                    <div onclick="Core.media.toggleMic()" id="micBtn" class="dock-btn" data-tooltip="الميكروفون">
-                        <i class="fas fa-microphone"></i>
-                    </div>
-                    <div onclick="Core.media.toggleCam()" id="camBtn" class="dock-btn" data-tooltip="الكاميرا">
-                        <i class="fas fa-video"></i>
-                    </div>
-                    <div onclick="Core.media.shareScreen()" id="screenBtn" class="dock-btn" data-tooltip="مشاركة الشاشة">
-                        <i class="fas fa-desktop"></i>
-                    </div>
-                    <div class="w-[1px] h-10 bg-white/10 mx-2"></div>
-                    <div onclick="Core.ui.toggleChat()" class="dock-btn" data-tooltip="الدردشة">
-                        <i class="fas fa-message"></i>
-                    </div>
-                    <div onclick="Core.ui.toggleFullscreen()" class="dock-btn" data-tooltip="ملء الشاشة">
-                        <i class="fas fa-expand"></i>
-                    </div>
-                    <div onclick="Core.rooms.leave()" class="dock-btn danger" data-tooltip="مغادرة">
-                        <i class="fas fa-phone-slash"></i>
-                    </div>
-                </div>
-            </main>
-
-            <aside class="members-list">
-                <h3 class="text-[11px] font-black text-gray-500 uppercase mb-6 tracking-[3px]">أعضاء المنظمة - <span id="onlineCount">0</span></h3>
-                <div id="membersContainer" class="space-y-4">
-                    </div>
-            </aside>
-
-        </div>
-
-        <div id="chatPanel" class="chat-panel shadow-[0_0_100px_rgba(0,0,0,1)]">
-            <div class="p-6 border-b border-white/5 flex justify-between items-center">
-                <h3 class="font-black gold-text">الدردشة الملكية</h3>
-                <i onclick="Core.ui.toggleChat()" class="fas fa-times cursor-pointer hover:text-red-500"></i>
             </div>
-            <div id="chatMsgs" class="flex-1 overflow-y-auto p-6 space-y-4">
+
+            <div class="video-container">
+                <video id="main-video" class="video-js vjs-big-play-centered" crossorigin="anonymous">
+                    <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video</p>
+                </video>
+            </div>
+
+            <div class="voice-overlay">
+                <div class="user-orb speaking" title="القائد">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=d4af37&color=000&bold=true">
+                    <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-black"></div>
                 </div>
-            <div class="p-6 bg-black/20">
-                <div class="flex gap-2">
-                    <input type="text" id="chatInput" placeholder="أرسل رسالة للمنظمة..." class="flex-1 bg-black/40 border border-white/10 p-4 rounded-xl outline-none focus:border-gold-primary">
-                    <button onclick="Core.chat.send()" class="w-14 h-14 bg-gold-primary rounded-xl text-black flex items-center justify-center">
+                <div class="user-orb opacity-50"><i class="fas fa-user-plus text-gray-600"></i></div>
+            </div>
+
+            <div class="cinema-controls">
+                <div onclick="toggleMic()" id="micBtn" class="control-unit" title="تكلم">
+                    <i class="fas fa-microphone"></i>
+                </div>
+                <div onclick="toggleCam()" class="control-unit" title="افتح الكاميرا">
+                    <i class="fas fa-video"></i>
+                </div>
+                <div onclick="syncEveryone()" class="control-unit" title="مزامنة للجميع">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <div onclick="shareScreen()" class="control-unit" title="مشاركة شاشتك">
+                    <i class="fas fa-desktop"></i>
+                </div>
+                <div onclick="toggleFullscreen()" class="control-unit" title="ملء الشاشة">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                </div>
+            </div>
+        </section>
+
+        <aside class="side-chat">
+            <div class="chat-header">
+                <h3 class="text-xl font-black gold-text">مجلس المنظمة</h3>
+                <p class="text-[10px] text-gray-600">دردشة فورية أثناء العرض</p>
+            </div>
+
+            <div id="chatMessages" class="message-box">
+                <div class="text-center text-[10px] text-zinc-700 uppercase tracking-widest my-4">بداية العرض الجماعي</div>
+            </div>
+
+            <div class="p-6 bg-[#08080c]">
+                <div class="flex gap-2 relative">
+                    <input type="text" id="msgInput" placeholder="تفاعل مع العرض..." class="w-full bg-white/5 border border-white/10 p-4 pr-12 rounded-2xl outline-none focus:border-royal-gold transition">
+                    <button onclick="sendMessage()" class="w-14 h-14 bg-royal-gold rounded-2xl text-black flex items-center justify-center shadow-lg active:scale-95 transition">
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
             </div>
-        </div>
+        </aside>
 
-    </div>
+    </main>
 
     <script>
-        /**
-         * Core System: منظومة ليالي العرب المتكاملة
-         * تم كتابة هذا المنطق ليتحمل آلاف السطور من العمليات والبيانات
-         */
-        
-        const i18n = {
-            ar: {
-                username: "اسم المستخدم الملكي", password: "كلمة المرور المشفرة",
-                createRoom: "إنشاء خيمة جديدة", members: "الأعضاء", 
-                motto: "بروتوكول النخبة الاجتماعي", logout: "خروج"
-            },
-            en: {
-                username: "Royal Username", password: "Encrypted Password",
-                createRoom: "Create New Tent", members: "Members",
-                motto: "The Elite Social Protocol", logout: "Logout"
-            }
+        const AppState = {
+            lang: 'ar',
+            user: 'عضو_المنظمة_' + Math.floor(Math.random()*999),
+            player: null,
+            isMicActive: false,
+            currentRoom: null
         };
 
-        const Core = {
-            state: {
-                lang: 'ar',
-                user: null,
-                activeRoom: null,
-                stream: null,
-                screenStream: null,
-                isMicOn: false,
-                isCamOn: false,
-                rooms: JSON.parse(localStorage.getItem('org_v2_rooms')) || [
-                    { id: 1, name: 'المجلس العام للمنظمة', host: 'System', type: 'public' },
-                    { id: 2, name: 'غرفة العمليات الخاصة', host: 'Admin', type: 'private' }
-                ],
-                peers: [
-                    { id: 101, name: 'صقر العرب', role: 'General', status: 'online' },
-                    { id: 102, name: 'المهيب', role: 'Moderator', status: 'online' },
-                    { id: 103, name: 'ليث المنظمة', role: 'Member', status: 'online' }
-                ]
-            },
+        // تهيئة المشغل
+        document.addEventListener('DOMContentLoaded', () => {
+            AppState.player = videojs('main-video', {
+                fluid: true,
+                controls: true,
+                autoplay: false,
+                preload: 'auto',
+                playbackRates: [0.5, 1, 1.5, 2]
+            });
+        });
 
-            // 1. نظام الهوية
-            auth: {
-                login: function() {
-                    const u = document.getElementById('username').value;
-                    if(u.length < 2) return Swal.fire('تنبيه', 'برجاء إدخال اسم لائق بالمنظمة', 'warning');
-                    
-                    Core.state.user = { name: u, role: 'Commander', id: Date.now() };
-                    gsap.to("#loginScreen", { opacity: 0, duration: 0.8, onComplete: () => {
-                        document.getElementById('loginScreen').classList.add('hidden');
-                        document.getElementById('appBody').classList.remove('hidden');
-                        Core.init();
-                    }});
-                }
-            },
-
-            // 2. نظام الوسائط (Media Engine)
-            media: {
-                async initStream() {
-                    try {
-                        Core.state.stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-                        // تعطيل المسارات في البداية
-                        Core.state.stream.getTracks().forEach(t => t.enabled = false);
-                    } catch(e) {
-                        console.error("Media Access Denied", e);
-                    }
-                },
-
-                toggleMic: function() {
-                    Core.state.isMicOn = !Core.state.isMicOn;
-                    Core.state.stream.getAudioTracks()[0].enabled = Core.state.isMicOn;
-                    const btn = document.getElementById('micBtn');
-                    btn.classList.toggle('active', Core.state.isMicOn);
-                    btn.innerHTML = `<i class="fas fa-microphone${Core.state.isMicOn ? '' : '-slash'}"></i>`;
-                    Core.media.updateVisualizer();
-                },
-
-                toggleCam: function() {
-                    Core.state.isCamOn = !Core.state.isCamOn;
-                    Core.state.stream.getVideoTracks()[0].enabled = Core.state.isCamOn;
-                    const btn = document.getElementById('camBtn');
-                    btn.classList.toggle('active', Core.state.isCamOn);
-                    btn.innerHTML = `<i class="fas fa-video${Core.state.isCamOn ? '' : '-slash'}"></i>`;
-                    Core.rooms.syncUI();
-                },
-
-                async shareScreen() {
-                    try {
-                        if(!Core.state.screenStream) {
-                            Core.state.screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-                            document.getElementById('screenBtn').classList.add('active');
-                            Core.rooms.syncUI(true); // وضع مشاركة الشاشة
-                            
-                            Core.state.screenStream.getVideoTracks()[0].onended = () => Core.media.shareScreen();
-                        } else {
-                            Core.state.screenStream.getTracks().forEach(t => t.stop());
-                            Core.state.screenStream = null;
-                            document.getElementById('screenBtn').classList.remove('active');
-                            Core.rooms.syncUI();
-                        }
-                    } catch(e) { console.warn("Screen share cancelled"); }
-                },
-
-                updateVisualizer: function() {
-                    if(!Core.state.isMicOn) return;
-                    const card = document.querySelector('.participant-card.my-card');
-                    if(card) card.classList.add('is-talking');
-                    setTimeout(() => card && card.classList.remove('is-talking'), 2000);
-                }
-            },
-
-            // 3. إدارة الغرف (Room Engine)
-            rooms: {
-                renderList: function() {
-                    const cont = document.getElementById('roomContainer');
-                    cont.innerHTML = '';
-                    Core.state.rooms.forEach(r => {
-                        const isActive = Core.state.activeRoom?.id === r.id;
-                        cont.innerHTML += `
-                            <div onclick="Core.rooms.join(${r.id})" class="p-4 rounded-2xl flex items-center justify-between cursor-pointer transition ${isActive ? 'bg-gold-primary text-black' : 'bg-white/5 hover:bg-white/10 text-gray-400'}">
-                                <div class="flex items-center gap-3">
-                                    <i class="fas ${r.type === 'private' ? 'fa-lock' : 'fa-hashtag'}"></i>
-                                    <span class="font-bold text-sm">${r.name}</span>
-                                </div>
-                                ${isActive ? '<div class="w-2 h-2 bg-black rounded-full animate-ping"></div>' : ''}
-                            </div>
-                        `;
-                    });
-                },
-
-                join: async function(id) {
-                    Core.state.activeRoom = Core.state.rooms.find(r => r.id === id);
-                    document.getElementById('currentRoomTitle').innerText = Core.state.activeRoom.name;
-                    document.getElementById('emptyStage').classList.add('hidden');
-                    document.getElementById('controlDock').classList.remove('hidden');
-                    
-                    if(!Core.state.stream) await Core.media.initStream();
-                    
-                    Core.rooms.syncUI();
-                    Core.rooms.renderList();
-                    Core.chat.logSystem(`لقد انضممت إلى ${Core.state.activeRoom.name}`);
-                },
-
-                syncUI: function(isSharing = false) {
-                    const grid = document.getElementById('stageGrid');
-                    grid.innerHTML = '';
-
-                    // بطاقتك الشخصية
-                    const myCard = document.createElement('div');
-                    myCard.className = `participant-card my-card animate__animated animate__zoomIn ${isSharing ? 'screen-share-overlay' : ''}`;
-                    myCard.innerHTML = `
-                        <div class="talking-ring"></div>
-                        <video id="localVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
-                        <div class="absolute bottom-4 left-4 bg-black/60 px-4 py-2 rounded-xl border border-white/10 flex items-center gap-2">
-                            <span class="text-[10px] font-black gold-text">${Core.state.user.name} (أنت)</span>
-                        </div>
-                    `;
-                    grid.appendChild(myCard);
-
-                    const videoEl = document.getElementById('localVideo');
-                    videoEl.srcObject = isSharing ? Core.state.screenStream : Core.state.stream;
-
-                    // محاكاة أعضاء المنظمة الآخرين في الغرفة
-                    if(!isSharing) {
-                        for(let i=0; i<3; i++) {
-                            grid.innerHTML += `
-                                <div class="participant-card opacity-50">
-                                    <div class="flex flex-col items-center">
-                                        <div class="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-4">
-                                            <i class="fas fa-user text-4xl text-gray-700"></i>
-                                        </div>
-                                        <p class="text-xs font-bold text-gray-500">عضو منتظر...</p>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    }
-                },
-
-                leave: function() {
-                    if(Core.state.stream) Core.state.stream.getTracks().forEach(t => t.stop());
-                    Core.state.activeRoom = null;
-                    location.reload(); // إعادة ضبط النظام
-                },
-
-                showModal: async function() {
-                    const { value: name } = await Swal.fire({
-                        title: 'تأسيس خيمة جديدة',
-                        input: 'text',
-                        inputPlaceholder: 'اسم الغرفة الملكي...',
-                        background: '#0a0e14', color: '#fff',
-                        confirmButtonColor: '#d4af37',
-                        confirmButtonText: 'تأكيد التأسيس'
-                    });
-                    if(name) {
-                        const newR = { id: Date.now(), name, host: Core.state.user.name, type: 'public' };
-                        Core.state.rooms.unshift(newR);
-                        localStorage.setItem('org_v2_rooms', JSON.stringify(Core.state.rooms));
-                        Core.rooms.renderList();
-                        Core.rooms.join(newR.id);
-                    }
-                }
-            },
-
-            // 4. نظام المحادثة (Chat Engine)
-            chat: {
-                send: function() {
-                    const inp = document.getElementById('chatInput');
-                    const msg = inp.value.trim();
-                    if(!msg) return;
-
-                    const cont = document.getElementById('chatMsgs');
-                    cont.innerHTML += `
-                        <div class="animate__animated animate__fadeInRight">
-                            <p class="text-[10px] font-black gold-text mb-1">${Core.state.user.name}</p>
-                            <div class="bg-white/5 p-4 rounded-2xl rounded-tr-none border border-white/5 text-sm leading-relaxed">
-                                ${msg}
-                            </div>
-                        </div>
-                    `;
-                    inp.value = '';
-                    cont.scrollTop = cont.scrollHeight;
-                },
-
-                logSystem: function(txt) {
-                    const cont = document.getElementById('chatMsgs');
-                    cont.innerHTML += `
-                        <div class="text-center my-4">
-                            <span class="bg-gold-primary/10 text-gold-primary text-[10px] px-4 py-1 rounded-full font-bold uppercase tracking-widest">${txt}</span>
-                        </div>
-                    `;
-                }
-            },
-
-            // 5. واجهة المستخدم (UI Engine)
-            ui: {
-                toggleChat: function() {
-                    document.getElementById('chatPanel').classList.toggle('open');
-                },
-
-                toggleFullscreen: function() {
-                    if (!document.fullscreenElement) {
-                        document.documentElement.requestFullscreen();
-                        document.body.classList.add('fullscreen-active');
-                    } else {
-                        document.exitFullscreen();
-                        document.body.classList.remove('fullscreen-active');
-                    }
-                },
-
-                toggleLang: function() {
-                    Core.state.lang = Core.state.lang === 'ar' ? 'en' : 'ar';
-                    document.getElementById('orgApp').lang = Core.state.lang;
-                    document.getElementById('orgApp').dir = Core.state.lang === 'ar' ? 'rtl' : 'ltr';
-                    
-                    const d = i18n[Core.state.lang];
-                    document.querySelectorAll('[data-key]').forEach(el => el.innerText = d[el.getAttribute('data-key')]);
-                    document.querySelectorAll('[data-placeholder]').forEach(el => el.placeholder = d[el.getAttribute('data-placeholder')]);
-                    
-                    Swal.fire({
-                        toast: true, position: 'top-end', timer: 2000, showConfirmButton: false,
-                        title: Core.state.lang === 'ar' ? 'تم تحويل اللغة' : 'Language Switched',
-                        background: '#d4af37', color: '#000'
-                    });
-                },
-
-                renderMembers: function() {
-                    const cont = document.getElementById('membersContainer');
-                    cont.innerHTML = '';
-                    Core.state.peers.forEach(p => {
-                        cont.innerHTML += `
-                            <div class="flex items-center justify-between group cursor-pointer hover:bg-white/5 p-2 rounded-xl transition">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-800 to-black border border-white/5 flex items-center justify-center font-black text-xs">
-                                        ${p.name[0]}
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-bold group-hover:text-gold-primary">${p.name}</p>
-                                        <p class="text-[9px] text-gray-500 uppercase">${p.role}</p>
-                                    </div>
-                                </div>
-                                <div class="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_10px_#00ff88]"></div>
-                            </div>
-                        `;
-                    });
-                    document.getElementById('onlineCount').innerText = Core.state.peers.length;
-                    document.getElementById('memberCount').innerText = Core.state.peers.length + 1;
-                }
-            },
-
-            init: function() {
-                Core.rooms.renderList();
-                Core.ui.renderMembers();
-                document.getElementById('myName').innerText = Core.state.user.name;
-                document.getElementById('myAvatar').src = `https://ui-avatars.com/api/?name=${Core.state.user.name}&background=d4af37&color=000&bold=true`;
+        function playMovie(url, title) {
+            document.getElementById('movieDashboard').classList.add('animate__fadeOut');
+            setTimeout(() => {
+                document.getElementById('movieDashboard').classList.add('hidden');
+                document.getElementById('theatreMode').classList.remove('hidden');
+                document.getElementById('nowPlayingTitle').innerText = title;
                 
-                // إضافة لمسة جمالية (GSAP)
-                gsap.from(".nav-item", { x: -50, opacity: 0, stagger: 0.1, duration: 1, ease: "power4.out" });
-                gsap.from(".channel-sidebar", { x: 100, opacity: 0, duration: 1.2, ease: "power4.out" });
-            }
-        };
+                AppState.player.src({ type: url.includes('m3u8') ? 'application/x-mpegURL' : 'video/mp4', src: url });
+                AppState.player.play();
+                
+                logSystem(`بدأ عرض: ${title}`);
+            }, 500);
+        }
 
-        // منع إغلاق الصفحة بالخطأ
-        window.onbeforeunload = function() {
-            if(Core.state.activeRoom) return "هل أنت متأكد من مغادرة المنظمة؟";
-        };
+        async function promptCustomUrl() {
+            const { value: url } = await Swal.fire({
+                title: 'رابط فودو أو سيمانا',
+                input: 'url',
+                inputPlaceholder: 'https://...',
+                background: '#020205', color: '#fff',
+                confirmButtonColor: '#d4af37'
+            });
+            if(url) playMovie(url, 'عرض خاص بالمنظمة');
+        }
+
+        function createNewShow() {
+            Swal.fire({
+                title: 'إنشاء خيمة عرض جديدة',
+                text: 'هل تريد دعوة المنظمة لمشاهدة عرض جماعي؟',
+                icon: 'info',
+                background: '#020205', color: '#fff',
+                confirmButtonColor: '#d4af37',
+                confirmButtonText: 'نعم، ابدأ البث'
+            }).then(r => { if(r.isConfirmed) promptCustomUrl(); });
+        }
+
+        function toggleMic() {
+            AppState.isMicActive = !AppState.isMicActive;
+            const btn = document.getElementById('micBtn');
+            btn.classList.toggle('bg-red-600', AppState.isMicActive);
+            btn.innerHTML = `<i class="fas fa-microphone${AppState.isMicActive ? '' : '-slash'}"></i>`;
+            
+            // في النسخة الحقيقية هنا يتم تفعيل WebRTC
+            if(AppState.isMicActive) {
+                document.querySelector('.user-orb').classList.add('speaking');
+                logSystem(`${AppState.user} يتحدث الآن...`);
+            } else {
+                document.querySelector('.user-orb').classList.remove('speaking');
+            }
+        }
+
+        function sendMessage() {
+            const inp = document.getElementById('msgInput');
+            if(!inp.value.trim()) return;
+
+            const box = document.getElementById('chatMessages');
+            box.innerHTML += `
+                <div class="msg-bubble animate__animated animate__fadeInUp self-start">
+                    <p class="text-[10px] font-black text-royal-gold mb-1">${AppState.user}</p>
+                    <p class="text-sm">${inp.value}</p>
+                </div>
+            `;
+            inp.value = '';
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function logSystem(txt) {
+            const box = document.getElementById('chatMessages');
+            box.innerHTML += `<div class="text-center text-[9px] text-yellow-600 font-bold uppercase my-2">System: ${txt}</div>`;
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function exitTheatre() {
+            AppState.player.pause();
+            document.getElementById('theatreMode').classList.add('hidden');
+            document.getElementById('movieDashboard').classList.remove('hidden', 'animate__fadeOut');
+        }
+
+        function toggleLang() {
+            AppState.lang = AppState.lang === 'ar' ? 'en' : 'ar';
+            location.reload(); // لإعادة التحميل باللغة الجديدة (مثال بسيط)
+        }
+
+        function syncEveryone() {
+            const currentTime = AppState.player.currentTime();
+            Swal.fire({
+                toast: true, position: 'top-end', title: 'تمت مزامنة الوقت لجميع المشاهدين',
+                timer: 2000, background: '#d4af37', color: '#000'
+            });
+        }
+
+        async function shareScreen() {
+            try {
+                const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                const videoEl = document.getElementById('main-video_html5_api'); // استهداف محرك الفيديو مباشرة
+                videoEl.srcObject = stream;
+                logSystem(`قام ${AppState.user} بمشاركة شاشته الآن`);
+            } catch(e) {}
+        }
     </script>
 </body>
 </html>
