@@ -1,298 +1,127 @@
 <!DOCTYPE html>
-<html id="ImperialEmpire" lang="ar" dir="rtl">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إمبراطورية ليالي العرب | السينما الكبرى</title>
-    
+    <title>منظمة ليالي العرب | محرك الأفلام العالمي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
-    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
-
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;700;800&family=Cinzel:wght@700&display=swap');
-
-        :root {
-            --royal-gold: #d4af37;
-            --deep-void: #020205;
-            --accent-red: #e50914;
-        }
-
-        body {
-            background: var(--deep-void);
-            color: #fff;
-            font-family: 'Almarai', sans-serif;
-            overflow: hidden;
-            height: 100vh;
-        }
-
-        /* واجهة الدخول */
-        #splash-screen {
-            position: fixed; inset: 0; z-index: 9999;
-            background: #000; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-        }
-
-        /* الهيكل الرئيسي */
-        .main-layout {
-            display: grid;
-            grid-template-columns: 80px 1fr 350px;
-            height: 100vh;
-        }
-
-        /* شريط الجانب (أيقونات المنظمة) */
-        .sidebar-org {
-            background: #000;
-            border-left: 1px solid rgba(212, 175, 55, 0.2);
-            display: flex; flex-direction: column; align-items: center; padding: 20px 0;
-            gap: 25px;
-        }
-
-        .side-icon {
-            width: 50px; height: 50px;
-            border-radius: 15px; background: #111;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--royal-gold); cursor: pointer; transition: 0.3s;
-        }
-        .side-icon:hover { background: var(--royal-gold); color: #000; transform: scale(1.1); }
-
-        /* منطقة المحتوى */
-        .content-area {
-            overflow-y: auto;
-            padding: 40px;
-            background: linear-gradient(to bottom, #050508, #000);
-        }
-
-        /* كرت الفيلم الملكي */
-        .movie-card {
-            position: relative;
-            border-radius: 15px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: 0.5s;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .movie-card:hover { transform: translateY(-10px); border-color: var(--royal-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .movie-card img { width: 100%; height: 350px; object-fit: cover; }
-        
-        /* مشغل الفيديو (المسرح) */
-        #theater-mode {
-            position: fixed; inset: 0; z-index: 5000;
-            background: #000; display: none;
-        }
-
-        /* زر اللغة الماسي */
-        .lang-diamond {
-            position: fixed; top: 30px; left: 30px; z-index: 6000;
-            padding: 8px 20px; background: rgba(0,0,0,0.8);
-            border: 1px solid var(--royal-gold); color: var(--royal-gold);
-            font-weight: 900; border-radius: 5px; cursor: pointer;
-        }
-
-        /* نظام الدردشة الجانبي */
-        .chat-sidebar {
-            background: #050507;
-            border-right: 1px solid rgba(212, 175, 55, 0.1);
-            display: flex; flex-direction: column;
-        }
-
-        .gold-text {
-            background: linear-gradient(135deg, #fff, var(--royal-gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* البحث الفخم */
-        .search-bar {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            padding: 15px 25px;
-            border-radius: 50px;
-            width: 100%; max-width: 600px;
-            outline: none; transition: 0.3s;
-        }
-        .search-bar:focus { border-color: var(--royal-gold); background: rgba(255,255,255,0.1); }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;900&display=swap');
+        body { background: #050505; color: white; font-family: 'Cairo', sans-serif; overflow-x: hidden; }
+        .gold-glow { text-shadow: 0 0 15px #d4af37; color: #d4af37; }
+        .movie-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; padding: 20px; }
+        .movie-card { position: relative; border-radius: 10px; overflow: hidden; cursor: pointer; transition: 0.4s; border: 1px solid #111; }
+        .movie-card:hover { transform: scale(1.05); border-color: #d4af37; }
+        .movie-card img { width: 100%; height: 270px; object-fit: cover; }
+        .movie-info { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, black); padding: 10px; font-size: 12px; }
+        #player-overlay { position: fixed; inset: 0; background: black; z-index: 9999; display: none; }
+        iframe { width: 100%; height: 100%; border: none; }
+        .close-btn { position: absolute; top: 20px; left: 20px; background: #d4af37; color: black; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; z-index: 10000; }
+        .search-box { background: #111; border: 1px solid #222; padding: 15px; border-radius: 50px; width: 100%; max-width: 500px; outline: none; transition: 0.3s; }
+        .search-box:focus { border-color: #d4af37; box-shadow: 0 0 20px rgba(212,175,55,0.2); }
     </style>
 </head>
 <body>
 
-    <div id="splash-screen">
-        <div class="animate__animated animate__fadeInUp text-center">
-            <i class="fas fa-crown text-7xl text-gold mb-4" style="color: var(--royal-gold)"></i>
-            <h1 class="text-4xl font-black gold-text tracking-widest">منظمة ليالي العرب</h1>
-            <p class="text-zinc-600 mt-2 uppercase tracking-[5px] text-xs">Global Cinema Protocol</p>
-            <div class="mt-10 h-1 w-48 bg-zinc-900 rounded-full overflow-hidden">
-                <div class="h-full bg-gold animate-progress" style="width: 40%; background: var(--royal-gold); animation: load 3s forwards"></div>
+    <nav class="p-6 flex justify-between items-center bg-black/50 sticky top-0 z-50 backdrop-blur-md border-b border-white/5">
+        <div class="text-2xl font-black gold-glow tracking-tighter">LAYALI AL ARAB</div>
+        <div class="flex-1 px-10">
+            <input type="text" id="searchInput" placeholder="ابحث عن أي فيلم لسرقته..." class="search-box">
+        </div>
+        <div class="flex gap-4 items-center">
+            <span class="text-xs text-green-500 font-bold"><i class="fas fa-signal"></i> SERVER: ACTIVE</span>
+            <div class="w-10 h-10 rounded-full border-2 border-gold-glow flex items-center justify-center">
+                <i class="fas fa-crown gold-glow text-sm"></i>
             </div>
+        </div>
+    </nav>
+
+    <div class="p-8">
+        <h2 class="text-xl font-black mb-6 flex items-center gap-2">
+            <i class="fas fa-bolt text-yellow-500"></i> أحدث الأفلام المسحوبة عالمياً
+        </h2>
+        <div id="movieContainer" class="movie-grid">
+            <div class="text-gray-500">جاري فحص القواعد البيانات...</div>
         </div>
     </div>
 
-    <div class="main-layout">
-        
-        <aside class="sidebar-org">
-            <div class="side-icon" title="الرئيسية"><i class="fas fa-home"></i></div>
-            <div class="side-icon" title="أفلام مختارة"><i class="fas fa-film"></i></div>
-            <div class="side-icon" title="البث المباشر"><i class="fas fa-tv"></i></div>
-            <div class="side-icon" title="الأعضاء"><i class="fas fa-users"></i></div>
-            <div class="mt-auto side-icon" onclick="location.reload()" title="خروج"><i class="fas fa-power-off"></i></div>
-        </aside>
-
-        <main class="content-area">
-            <header class="flex justify-between items-center mb-12">
-                <div>
-                    <h2 class="text-3xl font-black">استكشاف الأفلام</h2>
-                    <p class="text-gray-500 text-sm">أحدث المحتويات العالمية بين يديك</p>
-                </div>
-                <input type="text" placeholder="ابحث عن أي فيلم (عالمي أو فودو)..." class="search-bar">
-            </header>
-
-            <div id="movie-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="movie-card group" onclick="openTheater('https://vjs.zencdn.net/v/oceans.mp4', 'محيطات العالم')">
-                    <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80">
-                    <div class="p-4 bg-zinc-900">
-                        <h3 class="font-bold text-lg">وثائقي: أعماق البحار</h3>
-                        <p class="text-xs text-yellow-500">4K | مترجم</p>
-                    </div>
-                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-                        <i class="fas fa-play-circle text-6xl text-gold"></i>
-                    </div>
-                </div>
-
-                <div class="movie-card group" onclick="openTheater('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', 'مغامرة الطبيعة')">
-                    <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=800&q=80">
-                    <div class="p-4 bg-zinc-900">
-                        <h3 class="font-bold text-lg">عالم المغامرة</h3>
-                        <p class="text-xs text-yellow-500">HD | عالمي</p>
-                    </div>
-                </div>
-                
-                <div onclick="requestCustom()" class="movie-card flex flex-col items-center justify-center border-dashed border-2 border-zinc-800 p-10">
-                    <i class="fas fa-plus-circle text-4xl mb-4 text-zinc-700"></i>
-                    <p class="text-zinc-500 font-bold">إضافة رابط خاص</p>
-                </div>
+    <div id="player-overlay">
+        <div class="close-btn" onclick="closePlayer()"><i class="fas fa-arrow-right"></i> إغلاق العرض</div>
+        <div id="videoContainer" class="w-full h-full">
             </div>
-        </main>
-
-        <aside class="chat-sidebar">
-            <div class="p-8 border-b border-white/5">
-                <h3 class="text-xl font-black gold-text">مجلس الإمبراطورية</h3>
-                <div class="flex items-center gap-2 mt-2">
-                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                    <span class="text-[10px] text-gray-500">المتصلين الآن: 12 من القادة</span>
-                </div>
-            </div>
-
-            <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4">
-                <div class="text-[9px] text-zinc-700 text-center uppercase tracking-widest">بداية البروتوكول الآمن</div>
-            </div>
-
-            <div class="p-6 bg-black/50">
-                <div class="flex gap-2">
-                    <button onclick="toggleMic()" id="mic-btn" class="w-12 h-12 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-500 border border-zinc-800">
-                        <i class="fas fa-microphone-slash"></i>
-                    </button>
-                    <input type="text" id="chat-input" placeholder="تكلم..." class="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-sm outline-none">
-                </div>
-            </div>
-        </aside>
-    </div>
-
-    <div id="theater-mode">
-        <div class="lang-diamond" onclick="closeTheater()">إغلاق المسرح</div>
-        <div class="w-full h-full flex items-center justify-center">
-            <video id="theater-video" class="video-js vjs-big-play-centered" controls preload="auto">
-                <p class="vjs-no-js">To view this video please enable JavaScript</p>
-            </video>
-        </div>
-        
-        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-6 bg-black/80 p-4 rounded-full border border-gold/30">
-            <i onclick="syncTime()" class="fas fa-sync-alt text-xl cursor-pointer hover:text-gold"></i>
-            <i onclick="toggleMic()" class="fas fa-microphone text-xl cursor-pointer hover:text-gold"></i>
-            <i onclick="shareScreen()" class="fas fa-desktop text-xl cursor-pointer hover:text-gold"></i>
-        </div>
     </div>
 
     <script>
-        let player;
-        
-        // إخفاء السطح
-        setTimeout(() => {
-            document.getElementById('splash-screen').classList.add('animate__fadeOut');
-            setTimeout(() => document.getElementById('splash-screen').remove(), 1000);
-        }, 3000);
+        // مفتاح API تجريبي (لجلب البيانات)
+        const API_KEY = '8d6d9194546435662aa063955619f697'; 
+        const movieContainer = document.getElementById('movieContainer');
 
-        // تهيئة المشغل
-        document.addEventListener('DOMContentLoaded', () => {
-            player = videojs('theater-video', {
-                fluid: true,
-                controls: true,
-                playbackRates: [0.5, 1, 1.5, 2]
-            });
-        });
+        // 1. جلب الأفلام التلقائي (Scraping Simulation)
+        async function fetchMovies(query = '') {
+            let url = query 
+                ? `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}&language=ar`
+                : `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=ar&page=1`;
 
-        function openTheater(url, title) {
-            document.getElementById('theater-mode').style.display = 'block';
-            player.src({ type: 'video/mp4', src: url });
-            player.play();
-            logSystem(`بدأ القائد عرض: ${title}`);
-        }
-
-        function closeTheater() {
-            player.pause();
-            document.getElementById('theater-mode').style.display = 'none';
-        }
-
-        function requestCustom() {
-            Swal.fire({
-                title: 'جلب عرض خارجي',
-                input: 'url',
-                inputPlaceholder: 'ضع رابط الفيلم هنا (MP4, M3U8)',
-                background: '#050507', color: '#d4af37',
-                confirmButtonColor: '#d4af37'
-            }).then(result => {
-                if(result.value) openTheater(result.value, 'عرض خاص');
-            });
-        }
-
-        let mic = false;
-        function toggleMic() {
-            mic = !mic;
-            const btn = document.getElementById('mic-btn');
-            btn.style.color = mic ? '#d4af37' : '#555';
-            btn.style.borderColor = mic ? '#d4af37' : '#333';
-            btn.innerHTML = `<i class="fas fa-microphone${mic ? '' : '-slash'}"></i>`;
-            logSystem(mic ? "الميكروفون مفعل الآن" : "تم كتم الصوت");
-        }
-
-        function logSystem(msg) {
-            const chat = document.getElementById('chat-messages');
-            chat.innerHTML += `<div class="text-[9px] text-yellow-600 font-bold text-center my-2 uppercase">${msg}</div>`;
-            chat.scrollTop = chat.scrollHeight;
-        }
-
-        function syncTime() {
-            Swal.fire({ toast: true, position: 'top', title: 'تمت مزامنة الفيلم لجميع القادة', timer: 2000, showConfirmButton: false, background: '#d4af37', color: '#000' });
-        }
-
-        // تحسين تجربة البحث
-        document.querySelector('.search-bar').addEventListener('keyup', (e) => {
-            if(e.key === 'Enter') {
-                Swal.fire({
-                    title: 'جاري البحث في الأرشيف العالمي...',
-                    timer: 2000,
-                    didOpen: () => Swal.showLoading(),
-                    background: '#000', color: '#d4af37'
-                });
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                renderMovies(data.results);
+            } catch (error) {
+                movieContainer.innerHTML = "فشل الجلب، تأكد من الاتصال.";
             }
-        });
-    </script>
+        }
 
-    <style>
-        @keyframes load { from { width: 0%; } to { width: 100%; } }
-        .gold-text { color: var(--royal-gold); }
-    </style>
+        function renderMovies(movies) {
+            movieContainer.innerHTML = '';
+            movies.forEach(movie => {
+                if(!movie.poster_path) return;
+                const card = document.createElement('div');
+                card.className = 'movie-card animate__animated animate__fadeIn';
+                card.innerHTML = `
+                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                    <div class="movie-info">
+                        <p class="font-bold truncate">${movie.title}</p>
+                        <p class="text-[10px] text-yellow-500">${movie.release_date.split('-')[0]} | ★ ${movie.vote_average}</p>
+                    </div>
+                `;
+                card.onclick = () => openPlayer(movie.id, movie.title);
+                movieContainer.appendChild(card);
+            });
+        }
+
+        // 2. محرك "السرقة" المباشر (توليد رابط البث)
+        function openPlayer(id, title) {
+            const playerOverlay = document.getElementById('player-overlay');
+            const videoContainer = document.getElementById('videoContainer');
+            
+            // نستخدم سيرفرات وسيطة عالمية تقوم بجلب المحتوى تلقائياً بناءً على ID الفيلم
+            // هذه السيرفرات تحاول إيجاد أفضل بث متاح
+            const streamUrl = `https://vidsrc.me/embed/movie?tmdb=${id}`; 
+
+            playerOverlay.style.display = 'block';
+            videoContainer.innerHTML = `<iframe src="${streamUrl}" allowfullscreen></iframe>`;
+            
+            Swal.fire({
+                toast: true, position: 'top-end',
+                title: `جاري سحب بث: ${title}`,
+                icon: 'success', showConfirmButton: false, timer: 3000,
+                background: '#d4af37', color: '#000'
+            });
+        }
+
+        function closePlayer() {
+            document.getElementById('player-overlay').style.display = 'none';
+            document.getElementById('videoContainer').innerHTML = '';
+        }
+
+        // البحث عند الضغط على Enter
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') fetchMovies(e.target.value);
+        });
+
+        // تشغيل الجلب عند فتح الموقع
+        fetchMovies();
+    </script>
 </body>
 </html>
